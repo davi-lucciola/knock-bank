@@ -1,6 +1,6 @@
 from typing import Generic, TypedDict, TypeVar
 
-TData = TypeVar("TData")
+TData = TypeVar('TData')
 
 
 class PaginationResponseDTO(Generic[TData], TypedDict):
@@ -26,9 +26,9 @@ class PaginationBuilder:
         page_size: int,
     ) -> PaginationResponseDTO[TData]:
         return {
-            "data": data,
-            "total": total,
-            "totalPages": total_pages,
-            "pageIndex": page_index,
-            "pageSize": page_size,
+            'data': data,
+            'total': total,
+            'totalPages': total_pages,
+            'pageIndex': page_index,
+            'pageSize': page_size,
         }

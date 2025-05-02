@@ -1,27 +1,65 @@
-[tool.poetry]
-name = "knockbankapi"
-version = "1.0.3"
-description = "Knock Bank API"
-authors = ["Davi Lucciola <davilucciola14@gmail.com>"]
-package-mode = false
+[project]
+name = "knockbank-api"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "apiflask>=2.4.0",
+    "cpf-cnpj-validate>=1.4",
+    "flask-cors>=5.0.1",
+    "flask-migrate>=4.1.0",
+    "flask-sqlalchemy>=3.1.1",
+    "mysql-connector-python>=9.3.0",
+    "python-dotenv>=1.1.0",
+    "python-jose>=3.4.0",
+    "pytz>=2025.2",
+]
 
-[tool.poetry.dependencies]
-python = "^3.11"
-apiflask = "^2.0.2"
-flask-sqlalchemy = "^3.1.1"
-flask-migrate = "^4.0.5"
-flask-cors = "^4.0.0"
-python-dotenv = "^1.0.0"
-mysql-connector-python = "^8.2.0"
-python-jose = "^3.3.0"
-cpf-cnpj-validate = "^1.4"
-pytz = "^2024.1"
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+    "ruff>=0.11.8",
+]
 
+[tool.ruff]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+    ".venv",
+    "migrations"
+]
 
-[tool.poetry.group.dev.dependencies]
-black = "^24.2.0"
-flask-pytest = "^0.0.5"
+line-length = 88
+indent-width = 4
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"

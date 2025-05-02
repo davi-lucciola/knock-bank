@@ -1,10 +1,10 @@
-"""[rename] - transaction: value to money
+'''[rename] - transaction: value to money
 
 Revision ID: ce25e53603f8
 Revises: ecc7085c20b2
 Create Date: 2024-02-28 02:08:50.935374
 
-"""
+'''
 
 from alembic import op
 import sqlalchemy as sa
