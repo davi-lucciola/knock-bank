@@ -35,3 +35,5 @@ react-front
 __pycache__
 users.txt
 .env
+.pytest_cache
+.ruff_cache

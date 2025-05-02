@@ -18,6 +18,8 @@ lint:
 clean: 
 	find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
 	rm -rf .pytest_cache
+	rm -rf .coverage
+	rm -rf .ruff_cache
 
 image-push:
 	docker build -t davilucciola/knockbank-api .
