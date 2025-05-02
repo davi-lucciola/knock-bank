@@ -10,24 +10,24 @@ def create_app(config: Type[Config] = Config) -> APIFlask:
     app = APIFlask(
         __name__,
         title=Config.API_TITLE,
-        version=Config.API_VERSION,
-        docs_path="/api/docs",
-        spec_path="/api/openapi.json",
+        # version=Config.API_VERSION,
+        docs_path='/api/docs',
+        spec_path='/api/openapi.json',
     )
 
     # Config
-    CORS(app, origins=["*"])
+    CORS(app, origins=['*'])
     app.json.sort_keys = False
     app.url_map.strict_slashes = False
     app.config.from_object(config)
 
     # Info
-    @app.get(f"/api/info")
+    @app.get(f'/api/info')
     def info():
         return {
-            "title": Config.API_TITLE,
-            "description": Config.DESCRIPTION,
-            "version": Config.API_VERSION,
+            'title': Config.API_TITLE,
+            'description': Config.DESCRIPTION,
+            # "version": Config.API_VERSION,
         }
 
     # Routers

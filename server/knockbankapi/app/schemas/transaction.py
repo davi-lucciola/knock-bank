@@ -10,7 +10,7 @@ class TransactionQuery(PaginationQuery):
     transactionDate: date = Date()
     transactionType: int = Integer(
         validate=[
-            OneOf([1, 2, None], error="Tipo de transação inválida, deve ser 1 ou 2.")
+            OneOf([1, 2, None], error='Tipo de transação inválida, deve ser 1 ou 2.')
         ],
     )
 
@@ -18,10 +18,10 @@ class TransactionQuery(PaginationQuery):
 class TransactionIn(Schema):
     money: float = Float(required=True)
 
-    @validates("money")
+    @validates('money')
     def validate_money(self, money: float, **kwargs):
         if money <= 0:
-            raise ValidationError("O valor da transação deve ser maior que zero.")
+            raise ValidationError('O valor da transação deve ser maior que zero.')
 
 
 class TransactionTransfer(TransactionIn):

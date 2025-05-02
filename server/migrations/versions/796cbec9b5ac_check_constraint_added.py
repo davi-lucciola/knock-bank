@@ -1,10 +1,10 @@
-"""check constraint added
+'''check constraint added
 
 Revision ID: 796cbec9b5ac
 Revises: ce25e53603f8
 Create Date: 2024-06-14 01:28:03.653495
 
-"""
+'''
 
 from alembic import op
 import sqlalchemy as sa

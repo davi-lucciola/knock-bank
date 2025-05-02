@@ -11,10 +11,10 @@ from knockbankapi.infra.repositories import AccountRepository, TransactionReposi
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope='module')
 def app():
     app = create_app(TestingConfig)
 
@@ -22,18 +22,18 @@ def app():
         db.create_all()
 
         account1 = Account(
-            name="Tester1",
-            cpf="58228952040",
+            name='Tester1',
+            cpf='58228952040',
             birthDate=date(1980, 2, 15),
-            password="Test#123",
+            password='Test#123',
             accountType=1,
         )
 
         account2 = Account(
-            name="Tester2",
-            cpf="38162813039",
+            name='Tester2',
+            cpf='38162813039',
             birthDate=date(1980, 2, 15),
-            password="Test#123",
+            password='Test#123',
             accountType=1,
         )
 
@@ -51,32 +51,32 @@ def app():
         db.drop_all()
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope='module')
 def client(app: APIFlask):
     return app.test_client()
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope='module')
 def account_repository():
-    return AccountRepository()
+    return AccountRepository(db)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope='module')
 def transaction_repository():
-    return TransactionRepository()
+    return TransactionRepository(db)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope='function')
 def authorization(client: FlaskClient):
-    data = UserLoginDTO(cpf="58228952040", password="Test#123")
+    data = UserLoginDTO(cpf='58228952040', password='Test#123')
 
-    response = client.post("/api/login", json=data)
+    response = client.post('/api/login', json=data)
 
     assert response.status_code == HTTPStatus.OK
     assert response.json is not None
 
-    token = response.json.get("accessToken")
+    token = response.json.get('accessToken')
     assert token is not None
 
-    headers = {"Authorization": f"Bearer {token}"}
+    headers = {'Authorization': f'Bearer {token}'}
     return headers

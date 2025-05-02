@@ -1,8 +1,8 @@
 run:
-	poetry run flask --app knockbankapi run --debug
+	uv run flask --app knockbankapi run --debug
 
 install:
-	poetry install
+	uv sync
 
 reinstall: 
 	make clean
@@ -10,20 +10,14 @@ reinstall:
 	make install
 
 test:
-	poetry run pytest
+	uv run pytest
 
 lint:
-	poetry run black .
+	uv run ruff format
 
 clean: 
 	find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
 	rm -rf .pytest_cache
-
-generate:
-	poetry run flask --app knockbankapi db migrate -m "${migration}"
-
-migrate:
-	poetry run flask --app knockbankapi db upgrade
 
 image-push:
 	docker build -t davilucciola/knockbank-api .

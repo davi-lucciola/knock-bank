@@ -9,14 +9,16 @@ if typing.TYPE_CHECKING:
 
 
 class User(BaseModel):
-    __tablename__ = "users"
+    __tablename__ = 'users'
 
     id: Mapped[int] = mapped_column(BigIntegerPK, primary_key=True, autoincrement=True)
     password: Mapped[str] = mapped_column(String(255), nullable=False)
     token: Mapped[str] = mapped_column(String(255), nullable=True)
     refresh_token: Mapped[str] = mapped_column(String(255), nullable=True)
 
-    account: Mapped["Account"] = relationship("Account", back_populates="user")
+    account: Mapped['Account'] = relationship(
+        'Account', lazy='joined', back_populates='user'
+    )
 
     def __init__(self, password: str) -> None:
         self.password = password

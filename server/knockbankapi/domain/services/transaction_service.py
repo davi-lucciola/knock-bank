@@ -1,5 +1,5 @@
 from decimal import Decimal
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from knockbankapi.domain.errors import NotFoundError, DomainError
 from knockbankapi.domain.dto import (
     TransactionQueryDTO,
@@ -12,12 +12,8 @@ from knockbankapi.infra.repositories import AccountRepository, TransactionReposi
 
 @dataclass
 class TransactionService:
-    account_repository: AccountRepository = field(
-        default_factory=lambda: AccountRepository()
-    )
-    transaction_repository: TransactionRepository = field(
-        default_factory=lambda: TransactionRepository()
-    )
+    account_repository: AccountRepository
+    transaction_repository: TransactionRepository
 
     def get_all(self, filter: TransactionQueryDTO, account_id: int):
         transactions_pagination = self.transaction_repository.get_all(
@@ -33,18 +29,18 @@ class TransactionService:
         transaction = self.transaction_repository.get_by_id(transaction_id)
 
         if transaction is None:
-            raise NotFoundError("Transação não Encontrada")
+            raise NotFoundError('Transação não Encontrada')
 
         return transaction
 
     def withdraw(self, transaction_dto: TransactionDTO):
         account: Account = self.account_repository.get_by_id(
-            transaction_dto["accountId"]
+            transaction_dto['accountId']
         )
 
-        money: Decimal = Decimal(transaction_dto["money"])
+        money: Decimal = Decimal(transaction_dto['money'])
         if account.balance - money < 0:
-            raise DomainError("Saldo insuficiente.")
+            raise DomainError('Saldo insuficiente.')
 
         self.validate_daily_withdraw_limit(account, money)
         account.balance -= money
@@ -54,10 +50,10 @@ class TransactionService:
 
     def deposit(self, transaction_dto: TransactionDTO):
         account: Account = self.account_repository.get_by_id(
-            transaction_dto["accountId"]
+            transaction_dto['accountId']
         )
 
-        money: Decimal = Decimal(transaction_dto["money"])
+        money: Decimal = Decimal(transaction_dto['money'])
         account.balance += money
 
         transaction = Transaction(money, TransactionType.DEPOSIT, account)
@@ -65,27 +61,27 @@ class TransactionService:
 
     def transfer(self, transaction_transfer_dto: TransactionTransferDTO):
         if (
-            transaction_transfer_dto["accountId"]
-            == transaction_transfer_dto["senderAccountId"]
+            transaction_transfer_dto['accountId']
+            == transaction_transfer_dto['senderAccountId']
         ):
             raise DomainError(
-                "Não é possivel realizar uma trânsferencia para sua propria conta, por favor realize um deposito."
+                'Não é possivel realizar uma trânsferencia para sua propria conta, por favor realize um deposito.'
             )
 
         account_reciver = self.account_repository.get_by_id(
-            transaction_transfer_dto["accountId"]
+            transaction_transfer_dto['accountId']
         )
 
         if account_reciver is None:
-            raise NotFoundError("Conta destino não encontrada.")
+            raise NotFoundError('Conta destino não encontrada.')
 
         account_sender: Account = self.account_repository.get_by_id(
-            transaction_transfer_dto["senderAccountId"]
+            transaction_transfer_dto['senderAccountId']
         )
 
-        money: Decimal = Decimal(transaction_transfer_dto["money"])
+        money: Decimal = Decimal(transaction_transfer_dto['money'])
         if account_sender.balance - money < 0:
-            raise DomainError("Saldo insuficiente.")
+            raise DomainError('Saldo insuficiente.')
 
         self.validate_daily_withdraw_limit(account_sender, money)
 
@@ -108,4 +104,4 @@ class TransactionService:
         total = self.transaction_repository.get_total_today_withdraw(account.id)
 
         if round(-total + new_amount, 2) > account.daily_withdraw_limit:
-            raise DomainError("Limite de saque diário excedido.")
+            raise DomainError('Limite de saque diário excedido.')

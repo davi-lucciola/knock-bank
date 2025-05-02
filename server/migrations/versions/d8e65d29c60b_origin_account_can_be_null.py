@@ -1,10 +1,10 @@
-"""origin account can be null
+'''origin account can be null
 
 Revision ID: d8e65d29c60b
 Revises: 11ba600c4d43
 Create Date: 2024-06-14 18:11:41.893621
 
-"""
+'''
 
 from alembic import op
 import sqlalchemy as sa

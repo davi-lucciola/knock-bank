@@ -5,27 +5,27 @@ from knockbankapi.infra.repositories import AccountRepository
 
 # ------------ Logout User Tests --------------
 def test_logout_unauthorized(client: FlaskClient):
-    response = client.delete("/api/logout")
+    response = client.delete('/api/logout')
 
     assert response.status_code == HTTPStatus.UNAUTHORIZED
     assert response.json is not None
 
     json: dict = response.json
-    assert json.get("message") is not None
-    assert json.get("message") == "É obrigatório estar autenticado."
+    assert json.get('message') is not None
+    assert json.get('message') == 'É obrigatório estar autenticado.'
 
 
 def test_logout_successfully(
     client: FlaskClient, authorization: dict, account_repository: AccountRepository
 ):
-    response = client.delete("/api/logout", headers=authorization)
+    response = client.delete('/api/logout', headers=authorization)
 
     assert response.status_code == HTTPStatus.OK
     assert response.json is not None
 
     json: dict = response.json
-    assert json.get("message") is not None
-    assert json.get("message") == "Conta desconectada com sucesso."
+    assert json.get('message') is not None
+    assert json.get('message') == 'Conta desconectada com sucesso.'
 
     with client.application.app_context():
         account = account_repository.get_by_id(1)
