@@ -62,6 +62,25 @@ knock-bank
 
 ## 🪟 Demonstration
 
+### Auth Features
+
+> Sign Up and Sign In
+[sign-up-and-sign-in.webm](https://github.com/user-attachments/assets/7429cb94-42ad-4f2d-bc50-fcf613a0bc06)
+
+### Account Management
+
+> Transactions Management (Deposit, Withdraw and Transferences)
+[account-balance-management.webm](https://github.com/user-attachments/assets/e49672c0-7ae9-4d8e-ac30-af2b313dcda9)
+
+> View of the Account that received the transaction
+[account-balance-other-account.webm](https://github.com/user-attachments/assets/a1282d9e-901c-4f2f-b094-47e894bfe194)
+
+> Updating Account Personal Info
+[updating-account-info.webm](https://github.com/user-attachments/assets/b4bbdbd3-e787-4882-b4f7-5cdac5609154)
+
+> Blocking Account
+[block-account.webm](https://github.com/user-attachments/assets/39a0b07a-1e99-449e-88e7-cf238a81431a)
+
 ⸻
 
 ## 🚀 Getting Started
