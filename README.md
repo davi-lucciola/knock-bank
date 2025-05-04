@@ -5,7 +5,6 @@
 ![KnockBankLogo](./.github/assets/knock_bank_logo.svg)
 
 </span>
-</div>
 
 KnockBank is a modern full stack banking platform that allows its users to deposit, withdrawal and transfer values to other accounts on the platform, also providing a graphic visualization of total inflows and outflows by month of the current year.
 
