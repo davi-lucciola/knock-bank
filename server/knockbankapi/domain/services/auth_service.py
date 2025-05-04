@@ -9,31 +9,29 @@ from knockbankapi.infra.repositories import AccountRepository, UserRepository
 
 @dataclass
 class AuthService:
-    jwt_service: JwtService = field(default_factory=lambda: JwtService())
-    user_repository: UserRepository = field(default_factory=lambda: UserRepository())
-    account_repository: AccountRepository = field(
-        default_factory=lambda: AccountRepository()
-    )
+    jwt_service: JwtService
+    user_repository: UserRepository
+    account_repository: AccountRepository
 
     def login(self, user_login_dto: UserLoginDTO) -> str:
-        account = self.account_repository.get_by_cpf(user_login_dto["cpf"])
+        account = self.account_repository.get_by_cpf(user_login_dto['cpf'])
 
         if (
             account is None
-            or account.user.verify_password_hash(user_login_dto["password"]) is False
+            or account.user.verify_password_hash(user_login_dto['password']) is False
         ):
-            raise ForbiddenError("Credenciais Inválidas.")
+            raise ForbiddenError('Credenciais Inválidas.')
 
         if account is not None and account.fl_active is False:
             raise ForbiddenError(
-                "Você não pode entrar em uma conta bloqueada, por favor entre em contato com o suporte para desbloquear sua conta."
+                'Você não pode entrar em uma conta bloqueada, por favor entre em contato com o suporte para desbloquear sua conta.'
             )
 
         initiated_at: dt = dt.now()
         token_payload = {
-            "iat": initiated_at,
-            "exp": initiated_at + timedelta(days=1),
-            "user_id": account.user.id,
+            'iat': initiated_at,
+            'exp': initiated_at + timedelta(days=1),
+            'user_id': account.user.id,
         }
 
         token: str = self.jwt_service.encode_token(token_payload)

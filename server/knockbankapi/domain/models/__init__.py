@@ -6,7 +6,7 @@ from knockbankapi.infra.db import db
 BaseModel = db.Model
 
 big_integer_type = BigInteger()
-BigIntegerPK = big_integer_type.with_variant(sqlite.INTEGER(), "sqlite")
+BigIntegerPK = big_integer_type.with_variant(sqlite.INTEGER(), 'sqlite')
 
 
 from .person import Person

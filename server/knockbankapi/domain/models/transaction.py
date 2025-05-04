@@ -8,8 +8,8 @@ from knockbankapi.domain.models import BaseModel, BigIntegerPK, Account
 
 
 class TransactionType(Enum):
-    DEPOSIT = (1, "Depósito")
-    WITHDRAW = (2, "Saque")
+    DEPOSIT = (1, 'Depósito')
+    WITHDRAW = (2, 'Saque')
 
     @classmethod
     def get_transaction_type(cls, transaction_type_id: int):
@@ -17,11 +17,11 @@ class TransactionType(Enum):
             if transaction_type.value[0] == transaction_type_id:
                 return transaction_type
 
-        raise ValueError("Tipo de Transação Inválida.")
+        raise ValueError('Tipo de Transação Inválida.')
 
 
 class Transaction(BaseModel):
-    __tablename__ = "transactions"
+    __tablename__ = 'transactions'
 
     id: Mapped[int] = mapped_column(BigIntegerPK, primary_key=True, autoincrement=True)
     date_time: Mapped[dt] = mapped_column(DateTime, nullable=False, default=dt.now)
@@ -29,15 +29,15 @@ class Transaction(BaseModel):
     transaction_type: Mapped[int] = mapped_column(Integer, nullable=False)
 
     account_id: Mapped[int] = mapped_column(
-        BigIntegerPK, ForeignKey("accounts.id"), nullable=False
+        BigIntegerPK, ForeignKey('accounts.id'), nullable=False
     )
-    account: Mapped["Account"] = relationship("Account", foreign_keys=[account_id])
+    account: Mapped['Account'] = relationship('Account', foreign_keys=[account_id])
 
     origin_account_id: Mapped[int] = mapped_column(
-        BigIntegerPK, ForeignKey("accounts.id"), nullable=True
+        BigIntegerPK, ForeignKey('accounts.id'), nullable=True
     )
-    origin_account: Mapped["Account"] = relationship(
-        "Account", foreign_keys=[origin_account_id]
+    origin_account: Mapped['Account'] = relationship(
+        'Account', foreign_keys=[origin_account_id]
     )
 
     def __init__(
@@ -61,22 +61,22 @@ class Transaction(BaseModel):
         self.origin_account = origin_account
 
     def __str__(self) -> str:
-        return f"<Transaction - {self.account.person.name} | R${self.money:.2f}>"
+        return f'<Transaction - {self.account.person.name} | R${self.money:.2f}>'
 
     def to_json(self):
         return {
-            "id": self.id,
-            "money": float(self.money),
-            "dateTime": self.date_time.astimezone(timezone('America/Sao_Paulo')),
-            "transactionType": self.transaction_type,
-            "account": {
-                "id": self.account.id,
-                "name": self.account.person.name,
+            'id': self.id,
+            'money': float(self.money),
+            'dateTime': self.date_time.astimezone(timezone('America/Sao_Paulo')),
+            'transactionType': self.transaction_type,
+            'account': {
+                'id': self.account.id,
+                'name': self.account.person.name,
             },
-            "originAccount": (
+            'originAccount': (
                 {
-                    "id": self.origin_account.id,
-                    "name": self.origin_account.person.name,
+                    'id': self.origin_account.id,
+                    'name': self.origin_account.person.name,
                 }
                 if self.origin_account is not None
                 else None

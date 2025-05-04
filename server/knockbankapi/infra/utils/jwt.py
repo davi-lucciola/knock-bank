@@ -5,8 +5,8 @@ from dataclasses import dataclass
 
 @dataclass
 class JwtService:
-    ALGORITHM: str = "HS256"
-    TOKEN_SECRET: str = os.getenv("TOKEN_SECRET")
+    ALGORITHM: str = 'HS256'
+    TOKEN_SECRET: str | None = os.getenv('TOKEN_SECRET')
 
     def encode_token(self, payload: dict) -> str:
         return jwt.encode(payload, self.TOKEN_SECRET, self.ALGORITHM)

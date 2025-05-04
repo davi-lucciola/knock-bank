@@ -1,63 +1,120 @@
-# Knock Bank
-![KnockBankLogo](./assets/knock_bank_logo.svg)
+# 💵 KnockBank
 
-O KnockBank é uma plataforma bancaria que possibilita que os seus usuários realizem transações de deposito, saque e trânsferência para outras contas na plataforma, também disponibilizando um grafico de vizualização de entradas e saidas totais por mês do ano corrente.
+<span style="margin-top: 4px">
 
-Projeto Realizado inspirado em um teste técnico para Desenvolvedor Full Stack Pleno (Flask + React)
+![KnockBankLogo](./.github/assets/knock_bank_logo.svg)
 
-## Design
+</span>
 
-O prototipo inicial foi feito pelo [Not39](https://github.com/NOT39) em um projeto que ele chegou a prototipar para a gente implementar, mas nunca de fato realizamos, então peguei o modelo e adptei a ui para essa aplicação.
+KnockBank is a modern full stack banking platform that allows its users to deposit, withdrawal and transfer values to other accounts on the platform, also providing a graphic visualization of total inflows and outflows by month of the current year.
 
-Veja aqui no [Figma](https://www.figma.com/design/1toXDiygpjzpXCa8f6FBWY/KnockBank)
+⸻
 
-O Design foi feito para ser implementando de forma responsiva, atendendo dispositivos desktop e mobile.
+## ⚙️ Tech Stack
 
-### Desktop
+| Layer      | Tech                              |
+|------------|-----------------------------------|
+| Backend    | Python, APIFlask, SQLAlchemy                 |
+| Frontend   | Typescript, Next.js 14 (App Router), TailwindCSS and React Hook Form |
+| Database   | MySQL (via Docker)   |
+| DevOps  | Docker, GitHub Actions, Pytest, ESLint |
 
-![HomeDesktop](./assets/home_desktop.png)
-![DashboardDesktop](./assets/dashboard_desktop.png)
+⸻
 
-### Mobile
+## 🚀 Features
+- 🔒 JWT-based authentication
+- 💰 Account balance management with deposits, withdraw and transfer
+- 💵 List of all of your transactions (bank statement)
+- 💻 Simple, intuitive and Responsive UI 
+- 📊 Graphic visualization of total inflows and outflows by month of the current year.
+- 🧪 Automated integration tests of API 
+- 🐳 Dockerized development environment
 
-<center>
-<div style="display: flex; gap: 8px;">
+⸻
 
-<img src="./assets/dashboard_mobile.png" height="500">
-<img src="./assets/home_mobile.png" height="500">
+## 📂 Project Structure
 
-</div>
-</center>
+<pre>
 
-## System Design
+```
+knock-bank
+├── client/                # NextJS App
+│   ├── src/           
+│   │   ├── app/           # App Routing
+│   │   ├── components/    # Global Components
+│   │   ├── lib/           # Lib Modules
+│   │   └── modules/       # App modules separated by domain
+│   └── .env.exemple       # Env Variables Exemple
+│
+├── server/                # Flask APP
+│   ├── knockbankapi/      # API Module
+│   ├── migrations/        # Database Migrations
+│   ├── tests/             # Automated tests with Pytest
+│   └── .env.exemple       # Env Variables Exemple
+│
+├── .github/               # CI Config
+├── docker-compose.yml			
+└── README.md
+```
+</pre>
 
-WORK IN PROGRESS
-(com pipelines de testes, build e deploy...)
+⸻
 
-## Tecnologias
+## 🪟 Demonstration
 
-### Frontend
+⸻
 
-![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
-![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
-![React Hook Form](https://img.shields.io/badge/React%20Hook%20Form-%23EC5990.svg?style=for-the-badge&logo=reacthookform&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+## 🚀 Getting Started
 
-### Backend (API)
+### 📦 Requirements
+	• Python 3.12+
+	• Node.js 20+
+	• Docker & Docker Compose
 
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
-![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
-![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)
-![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+⸻
 
-#### Arquitetura
+## 🐳 Start with Docker
 
-A API foi construida utilizando a arquitetura MVC com camada de Servico (MVC+Service) e foram utilizadas as seguintes abordagens durante sua construção:
+### Build and run everything
 
-- Injeção de Depêndencias, para melhor isolamento das camadas e facilitação de testes unitários
-- Repository Pattern para encapsular lógica de acesso ao banco de dados e garantir atomicidade quando mais de uma entidade está sendo alterada.
-- Service encapsulando as regras de negócio, que através da injeção de dependencia dos repositories facilita os testes unitários.
+`docker-compose up --build`
 
-WORK IN PROGRESS...
+Access the frontend at http://localhost:3000.
+You also can access the backend API docs at http://localhost:5000/api/docs.
 
+⸻
+
+## 🧪 Run Tests
+
+Backend tests (pytest):
+
+- cd server
+- uv sync
+- uv run pytest
+
+⸻
+
+<!--
+
+## 🧹 Pre-commit Hooks
+
+### One-time setup
+pre-commit install
+
+### Run all hooks manually
+pre-commit run --all-files
+
+That’s looking super clean and professional, Leo! 🔥 Here’s the final section you can append to your README.md:
+
+⸻
+
+## 🧭 Next Steps
+Check out the [Project board]() to see what’s coming next!
+We’re actively working on new features like:
+- User profile pages
+- OAuth login
+- Admin dashboard
+- Genre-based book filters
+- More AI enhancements
+
+Stay tuned and feel free to contribute! -->

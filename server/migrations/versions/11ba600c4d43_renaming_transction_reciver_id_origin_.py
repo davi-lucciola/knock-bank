@@ -1,10 +1,10 @@
-"""renaming transction reciver_id -> origin account and check contraint on balance
+'''renaming transction reciver_id -> origin account and check contraint on balance
 
 Revision ID: 11ba600c4d43
 Revises: 796cbec9b5ac
 Create Date: 2024-06-14 17:38:21.616307
 
-"""
+'''
 
 from alembic import op
 import sqlalchemy as sa

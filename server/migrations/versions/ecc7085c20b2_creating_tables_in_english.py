@@ -1,10 +1,10 @@
-"""creating tables in english
+'''creating tables in english
 
 Revision ID: ecc7085c20b2
 Revises: 
 Create Date: 2024-02-21 01:06:06.536672
 
-"""
+'''
 
 from alembic import op
 import sqlalchemy as sa

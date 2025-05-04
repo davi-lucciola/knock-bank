@@ -19,12 +19,12 @@ class BaseAccount(Schema):
     accountType: int = Integer(
         required=True,
         validate=[
-            OneOf([1, 2, 3, 4], error="Tipo de Conta Inválida. Deve ser 1, 2, 3 ou 4.")
+            OneOf([1, 2, 3, 4], error='Tipo de Conta Inválida. Deve ser 1, 2, 3 ou 4.')
         ],
     )
     dailyWithdrawLimit: float = Float(
         required=False,
-        validate=[Range(min=0, error="O limite de saque diário deve maior que zero.")],
+        validate=[Range(min=0, error='O limite de saque diário deve maior que zero.')],
         load_default=999,
     )
 
@@ -33,15 +33,15 @@ class AccountIn(BaseAccount):
     cpf: str = String(required=True)
     password: str = String(required=True)
 
-    @validates("cpf")
+    @validates('cpf')
     def validate_cpf(self, cpf: str, **kwargs):
         if cpfcnpj.validate(cpf) is False:
-            raise ValidationError("Cpf inválido.")
+            raise ValidationError('Cpf inválido.')
 
-    @validates("password")
+    @validates('password')
     def validate_password(self, password: str, **kwargs) -> None:
         if len(password) < 8:
-            raise ValidationError("A senha deve conter no minímo 8 caracteres.")
+            raise ValidationError('A senha deve conter no minímo 8 caracteres.')
 
         have_lower = have_upper = have_digits = have_special = False
         for char in password:
@@ -62,16 +62,16 @@ class AccountIn(BaseAccount):
 
         else:
             if have_lower is False:
-                raise ValidationError("A senha deve conter letras minúsculas.")
+                raise ValidationError('A senha deve conter letras minúsculas.')
 
             if have_upper is False:
-                raise ValidationError("A senha deve conter letras maiúsculas.")
+                raise ValidationError('A senha deve conter letras maiúsculas.')
 
             if have_digits is False:
-                raise ValidationError("A senha deve conter numeros.")
+                raise ValidationError('A senha deve conter numeros.')
 
             if have_special is False:
-                raise ValidationError("A senha deve conter caracteres especiais.")
+                raise ValidationError('A senha deve conter caracteres especiais.')
 
 
 class AccountQuery(PaginationQuery):
