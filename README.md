@@ -15,7 +15,7 @@ KnockBank is a modern full stack banking platform that allows its users to depos
 | Layer      | Tech                              |
 |------------|-----------------------------------|
 | Backend    | Python, APIFlask, SQLAlchemy                 |
-| Frontend   | Typescript, Next.js 14 (App Router), TailwindCSS and React Hook Form |
+| Frontend   | Typescript, Next.js 14 (App Router), TailwindCSS, React Hook Form |
 | Database   | MySQL (via Docker)   |
 | DevOps  | Docker, GitHub Actions, Pytest, ESLint |
 
