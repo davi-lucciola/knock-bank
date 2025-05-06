@@ -18,10 +18,10 @@ Closes #__
 
 ### 🔍 Changes
 - [ ] New components
-- [ ] API updated
 - [ ] Lint/pre-commit updates
 - [ ] Backend logic
 - [ ] Frontend page
+- [ ] DevOps update (CI, CD)
 
 ### 🧪 How to test
 <!-- Describe how to test this change manually -->
