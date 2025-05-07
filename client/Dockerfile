@@ -17,7 +17,7 @@ ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 RUN npm run build
 
 # Runtime Stage
-FROM node:20-alpine as runtime
+FROM node:20-alpine AS runtime
 
 WORKDIR /knockbank_web
 

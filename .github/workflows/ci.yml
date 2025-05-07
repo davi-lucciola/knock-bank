@@ -1,8 +1,8 @@
 name: Continuos Integration - CI
 
 on: 
-  push:
-    branches: [main]
+  pull_request:
+    branches: [dev, main]
 
 jobs:
   build:
@@ -33,6 +33,7 @@ jobs:
           uv run pytest
         env:
           TOKEN_SECRET: testkey
+          SQLALCHEMY_DATABASE_URI: 'sqlite:///:memory:'
       
       # Web - Build
       - name: Using NodeJS
@@ -48,7 +49,6 @@ jobs:
       # Web - Tests
       # Work In Progress
 
-      
       # Login Dockerhub
       # - name: Login Dockerhub
       #   env:

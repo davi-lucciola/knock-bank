@@ -1,10 +1,6 @@
 # 💵 KnockBank
 
-<span style="margin-top: 4px">
-
-![KnockBankLogo](./.github/assets/knock_bank_logo.svg)
-
-</span>
+![knock_bank_logo](.github/assets/knock_bank_logo.svg)
 
 KnockBank is a modern full stack banking platform that allows its users to deposit, withdrawal and transfer values to other accounts on the platform, also providing a graphic visualization of total inflows and outflows by month of the current year.
 
@@ -14,10 +10,11 @@ KnockBank is a modern full stack banking platform that allows its users to depos
 
 | Layer      | Tech                              |
 |------------|-----------------------------------|
-| Backend    | Python, APIFlask, SQLAlchemy                 |
+| Backend    | Python, FastAPI, SQLAlchemy        |
 | Frontend   | Typescript, Next.js 14 (App Router), TailwindCSS, React Hook Form |
 | Database   | MySQL (via Docker)   |
-| DevOps  | Docker, GitHub Actions, Pytest, ESLint |
+| DevOps  | Docker, GitHub Actions, Pytest |
+| Lint  | Ruff, ESLint |
 
 ⸻
 
@@ -46,10 +43,13 @@ knock-bank
 │   │   └── modules/       # App modules separated by domain
 │   └── .env.exemple       # Env Variables Exemple
 │
-├── server/                # Flask APP
-│   ├── knockbankapi/      # API Module
-│   ├── migrations/        # Database Migrations
-│   ├── tests/             # Automated tests with Pytest
+├── server/                # FastAPI APP
+│   ├── src/           
+│   │   ├── app/           # App Modules
+│   │   ├── core/          # Global Configurations
+│   │   ├── migrations/    # Database Migrations
+│   │   ├── tests/         # Automated Tests
+│   │   └── utils/         # Utilities Module
 │   └── .env.exemple       # Env Variables Exemple
 │
 ├── .github/               # CI Config
@@ -88,6 +88,18 @@ knock-bank
 
 ⸻
 
+## 📱Mobile
+
+> Initial Page 
+
+![home_mobile](.github/assets/home_mobile.png)
+
+> Dashboard
+
+![dashboard_mobile](.github/assets/dashboard_mobile.png)
+
+⸻
+
 ## 🚀 Getting Started
 
 ### 📦 Requirements
@@ -104,7 +116,8 @@ knock-bank
 `docker-compose up --build`
 
 Access the frontend at http://localhost:3000.
-You also can access the backend API docs at http://localhost:5000/api/docs.
+
+You also can access the backend API docs at http://localhost:8000/api/docs.
 
 ⸻
 
