@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     DOCS_URL: str = '/api/docs'
     DESCRIPTION: str = 'API para gerenciar transacoes bancarias do Knock Bank'
 
-    SHOW_SQL: bool = os.getenv('SHOW_SQL')
+    SHOW_SQL: bool = os.getenv('SHOW_SQL', False)
     DATABASE_URI: str = os.getenv('SQLALCHEMY_DATABASE_URI')
 
     # JWT
