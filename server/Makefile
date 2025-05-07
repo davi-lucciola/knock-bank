@@ -21,6 +21,12 @@ clean:
 	rm -rf .coverage
 	rm -rf .ruff_cache
 
+revision:
+	cd src && uv run alembic revision --autogenerate -m $(name)
+
+migrate:
+	cd src && uv run alembic upgrade head
+
 image-push:
 	docker build -t davilucciola/knockbank-api .
 	docker push davilucciola/knockbank-api:latest

@@ -27,11 +27,11 @@ def create_year_transaction_resume_by_month(
         this_year_transactions_resume.append({'month': value, 'label': 'Entrada'})
         this_year_transactions_resume.append({'month': value, 'label': 'Saída'})
 
-    # if len(data) == 0:
-    #     return [
-    #         TransactionMonthResumeOut(**result, amount=0)
-    #         for result in this_year_transactions_resume
-    #     ]
+    if len(data) == 0:
+        return [
+            TransactionMonthResumeOut(**result, amount=0)
+            for result in this_year_transactions_resume
+        ]
 
     for resume in data:
         for month_resume in this_year_transactions_resume:

@@ -16,5 +16,5 @@ class PaginationResponse[T](BaseModel):
 
 
 class PaginationQuery(BaseModel):
-    pageIndex: int = Field(ge=1, default=1)
-    pageSize: int = Field(ge=1, default=10)
+    pageIndex: int | None = Field(ge=1, default=1)
+    pageSize: int | None = Field(ge=1, default=10)
