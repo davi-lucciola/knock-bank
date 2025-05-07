@@ -1,6 +1,6 @@
 # 💵 KnockBank
 
-![KnockBankLogo](./.github/assets/knock_bank_logo.svg)
+![knock_bank_logo](.github/assets/knock_bank_logo.svg)
 
 KnockBank is a modern full stack banking platform that allows its users to deposit, withdrawal and transfer values to other accounts on the platform, also providing a graphic visualization of total inflows and outflows by month of the current year.
 
@@ -91,10 +91,12 @@ knock-bank
 ## 📱Mobile
 
 > Initial Page 
-![home_mobile](./.github/assets/home_mobile.png)
+
+![home_mobile](.github/assets/home_mobile.png)
 
 > Dashboard
-![dashboard_mobile](./.github/assets/dashboard_mobile.png)
+
+![dashboard_mobile](.github/assets/dashboard_mobile.png)
 
 ⸻
 
