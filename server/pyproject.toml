@@ -5,15 +5,16 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "apiflask>=2.4.0",
     "cpf-cnpj-validate>=1.4",
-    "flask-cors>=5.0.1",
-    "flask-migrate>=4.1.0",
-    "flask-sqlalchemy>=3.1.1",
+    "fastapi[standard]>=0.115.12",
     "mysql-connector-python>=9.3.0",
+    "passlib[bcrypt]>=1.7.4",
+    "bcrypt==4.0.1",
+    "pydantic-settings>=2.9.1",
+    "pyjwt>=2.10.1",
     "python-dotenv>=1.1.0",
-    "python-jose>=3.4.0",
     "pytz>=2025.2",
+    "sqlalchemy>=2.0.40",
 ]
 
 [dependency-groups]
