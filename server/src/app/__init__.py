@@ -4,8 +4,8 @@ from contextlib import asynccontextmanager
 
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from app import routes
 
+from app import routes
 from core.log import logger
 from core.config import settings
 from utils.schemas import MessageResponse
@@ -30,10 +30,8 @@ def create_app(lifespan: Callable = default_lifespan) -> FastAPI:
     @app.exception_handler(Exception)
     def generic_exception_handler(request: Request, exc: Exception):
         logger.error(exc)
-        content = MessageResponse(
-            message='Houve um error ao processar sua solicitação.'
-        ).model_dump()
-        return JSONResponse(content, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        content = MessageResponse(message='Houve um error ao processar sua solicitação.')
+        return JSONResponse(content.model_dump(mode='json'), status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @app.exception_handler(RequestValidationError)
     def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -49,10 +47,8 @@ def create_app(lifespan: Callable = default_lifespan) -> FastAPI:
 
             details.append(detail)
 
-        content = MessageResponse(
-            message='Validation Error', detail=details
-        ).model_dump()
-        return JSONResponse(content, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        content = MessageResponse(message='Validation error', detail=details)
+        return JSONResponse(content.model_dump(mode='json'), status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     @app.exception_handler(HTTPException)
     def http_exception_handler(request: Request, exc: HTTPException):

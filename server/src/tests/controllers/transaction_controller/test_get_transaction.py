@@ -1,25 +1,28 @@
-from http import HTTPStatus
-from flask.testing import FlaskClient
-from knockbankapi.domain.models import Transaction, TransactionType
-from knockbankapi.infra.repositories import AccountRepository, TransactionRepository
+from fastapi import status
+from fastapi.testclient import TestClient
+from app.transaction.models import Transaction
+from app.transaction.enums import TransactionType
+from app.transaction.repository import TransactionRepository
+from app.account.repository import AccountRepository
 
 
 # ------------ Get Transactions Tests --------------
-def test_get_my_transactions_unauthorized(client: FlaskClient):
+def test_get_my_transactions_unauthorized(client: TestClient):
     # Test
     response = client.get('/api/transaction')
 
     # Assertion
-    assert response.status_code == HTTPStatus.UNAUTHORIZED
-    assert response.json is not None
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-    json: dict = response.json
+    json: dict = response.json()
+    assert json is not None
+
     assert json.get('message') is not None
     assert json.get('message') == 'É obrigatório estar autenticado.'
 
 
 def test_get_my_transactions(
-    client: FlaskClient,
+    client: TestClient,
     authorization: dict,
     account_repository: AccountRepository,
     transaction_repository: TransactionRepository,
@@ -27,30 +30,32 @@ def test_get_my_transactions(
     # Setup
     account_id = 1
     origin_account_id = 2
-    with client.application.app_context():
-        account = account_repository.get_by_id(account_id)
-        account_reciver = account_repository.get_by_id(origin_account_id)
 
-        transaction1 = Transaction(
-            money=-200, transaction_type=TransactionType.WITHDRAW, account=account
-        )
-        transaction_repository.save(transaction1)
+    account = account_repository.get_by_id(account_id)
+    account_reciver = account_repository.get_by_id(origin_account_id)
 
-        transaction2 = Transaction(
-            money=156.04,
-            transaction_type=TransactionType.DEPOSIT,
-            account=account,
-            origin_account=account_reciver,
-        )
-        transaction_repository.save(transaction2)
+    transaction1 = Transaction(
+        money=-200, transaction_type=TransactionType.WITHDRAW, account=account
+    )
+    transaction_repository.save(transaction1)
+
+    transaction2 = Transaction(
+        money=156.04,
+        transaction_type=TransactionType.DEPOSIT,
+        account=account,
+        origin_account=account_reciver,
+    )
+    transaction_repository.save(transaction2)
 
     # Test
     response = client.get('/api/transaction', headers=authorization)
 
     # Assertion
-    assert response.status_code == HTTPStatus.OK
+    assert response.status_code == status.HTTP_200_OK
 
-    json: dict = response.json
+    json: dict = response.json()
+    assert json is not None
+
     assert json.get('pageIndex') is not None
     assert json.get('pageSize') is not None
     assert json.get('total') is not None

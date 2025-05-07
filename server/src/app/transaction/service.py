@@ -89,7 +89,7 @@ class TransactionService:
         )
 
         if account_reciver is None:
-            raise ReciverAccountNotFound('Conta destino não encontrada.')
+            raise ReciverAccountNotFound()
 
         account_sender: Account = self.account_repository.get_by_id(
             transaction_transfer_in.senderAccountId

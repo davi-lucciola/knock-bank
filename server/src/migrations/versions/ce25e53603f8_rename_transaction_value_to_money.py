@@ -5,16 +5,17 @@ Revises: ecc7085c20b2
 Create Date: 2024-02-28 02:08:50.935374
 
 '''
+from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import mysql
 
 # revision identifiers, used by Alembic.
-revision = "ce25e53603f8"
-down_revision = "ecc7085c20b2"
-branch_labels = None
-depends_on = None
+revision: str = "ce25e53603f8"
+down_revision: Union[str, None] = "ecc7085c20b2"
+branch_labels: Union[str, Sequence[str], None] = None
+depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade():

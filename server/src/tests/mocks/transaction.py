@@ -1,18 +1,14 @@
-from knockbankapi.domain.dto import (
-    TransactionDTO,
-    TransactionFilterDTO,
-    TransactionTransferDTO,
-)
+from app.transaction.schemas import MoneyIn, TransactionIn, TransactionFilter
 
 
-def transaction_dto():
-    return TransactionDTO(money=800)
+def money_in():
+    return MoneyIn(money=800).model_dump(mode='json')
 
 
-def transaction_transfer_dto():
+def transaction_in():
     # accountId from "Tester2"
-    return TransactionTransferDTO(money=800, accountId=2)
+    return TransactionIn(money=800, accountId=2).model_dump(mode='json')
 
 
-def transaction_query_dto():
-    return TransactionFilterDTO(pageIndex=1, pageSize=10)
+def transaction_filter():
+    return TransactionFilter(pageIndex=1, pageSize=10).model_dump(mode='json')

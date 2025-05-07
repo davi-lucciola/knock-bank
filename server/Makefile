@@ -1,5 +1,5 @@
 run:
-	uv run flask --app knockbankapi run --debug
+	cd src && uv run fastapi dev main.py
 
 install:
 	uv sync

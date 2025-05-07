@@ -71,10 +71,10 @@ class Account(BaseModel):
         return f'<Account - {self.person.name} | {self.id}>'
 
     def update(self, data: UpdateAccountIn) -> None:
-        self.person.name = data['name']
-        self.person.birth_date = data['birthDate']
-        self.account_type = data['accountType']
-        self.daily_withdraw_limit = data['dailyWithdrawLimit']
+        self.person.name = data.name
+        self.person.birth_date = data.birthDate
+        self.account_type = data.accountType
+        self.daily_withdraw_limit = data.dailyWithdrawLimit
 
     def to_json(self, mask_cpf: bool = False) -> dict:
         return {

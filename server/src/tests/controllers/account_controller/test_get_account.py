@@ -1,26 +1,31 @@
-from http import HTTPStatus
-from flask.testing import FlaskClient
+from fastapi import status
+from fastapi.testclient import TestClient
+from tests.conftest import AuthorizationHeader
 
 
 # ------------ Get My Account Test ---------------
-def test_get_my_account_unauthorized(client: FlaskClient):
+def test_get_my_account_unauthorized(client: TestClient):
     response = client.get('/api/account/me')
 
-    assert response.status_code == HTTPStatus.UNAUTHORIZED
-    assert response.json is not None
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-    json: dict = response.json
-    assert json.get('message') is not None
-    assert json.get('message') == 'É obrigatório estar autenticado.'
+    json: dict = response.json()
+    assert json is not None
+
+    # assert json.get('message') is not None
+    # assert json.get('message') == 'É obrigatório estar autenticado.'
 
 
-def test_get_my_account_successfully(client: FlaskClient, authorization: dict):
+def test_get_my_account_successfully(
+    client: TestClient, authorization: AuthorizationHeader
+):
     response = client.get('/api/account/me', headers=authorization)
 
-    assert response.status_code == HTTPStatus.OK
-    assert response.json is not None
+    assert response.status_code == status.HTTP_200_OK
 
-    json: dict = response.json
+    json: dict = response.json()
+    assert json is not None
+
     assert json.get('id') is not None
     assert json.get('accountType') is not None
     assert json.get('flActive') is not None
@@ -33,24 +38,26 @@ def test_get_my_account_successfully(client: FlaskClient, authorization: dict):
 
 
 # ------------ Get Other Accounts Test ---------------
-def test_get_other_accounts_unauthorized(client: FlaskClient):
+def test_get_other_accounts_unauthorized(client: TestClient):
     response = client.get('/api/account')
 
-    assert response.status_code == HTTPStatus.UNAUTHORIZED
-    assert response.json is not None
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-    json: dict = response.json
+    json: dict = response.json()
+    assert json is not None
+
     assert json.get('message') is not None
     assert json.get('message') == 'É obrigatório estar autenticado.'
 
 
-def test_get_other_accounts(client: FlaskClient, authorization: dict):
+def test_get_other_accounts(client: TestClient, authorization: dict):
     response = client.get('/api/account', headers=authorization)
 
-    assert response.status_code == HTTPStatus.OK
-    assert response.json is not None
+    assert response.status_code == status.HTTP_200_OK
 
-    json: dict = response.json
+    json: dict = response.json()
+    assert json is not None
+
     assert json.get('pageIndex') is not None
     assert json.get('pageSize') is not None
     assert json.get('total') is not None

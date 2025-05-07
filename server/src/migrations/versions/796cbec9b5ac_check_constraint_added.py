@@ -5,16 +5,17 @@ Revises: ce25e53603f8
 Create Date: 2024-06-14 01:28:03.653495
 
 '''
+from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "796cbec9b5ac"
-down_revision = "ce25e53603f8"
-branch_labels = None
-depends_on = None
+revision: str = "796cbec9b5ac"
+down_revision: Union[str, None] = "ce25e53603f8"
+branch_labels: Union[str, Sequence[str], None] = None
+depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade():

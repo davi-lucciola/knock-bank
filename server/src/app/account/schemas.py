@@ -17,8 +17,8 @@ class PersonOut(PersonBasicOut):
 class UpdateAccountIn(BaseModel):
     name: str
     birthDate: date
-    accountType: int
-    dailyWithdrawLimit: float
+    accountType: int = Field(ge=1, le=2)
+    dailyWithdrawLimit: float = Field(gt=0)
 
 
 class AccountFilter(PaginationQuery):

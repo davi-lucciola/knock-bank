@@ -1,9 +1,9 @@
-from pycpfcnpj import cpf
+from validate_docbr import CPF
 from string import ascii_lowercase, ascii_uppercase, digits, punctuation
 
 
 def validate_cpf(value: str) -> None:
-    if cpf.validate(value) is False:
+    if CPF().validate(value) is False:
         raise ValueError('Cpf Inválido.')
 
 
