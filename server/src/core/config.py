@@ -8,6 +8,7 @@ env.load_dotenv()
 
 class Settings(BaseSettings):
     API_TITLE: str = 'Knock Bank API'
+    DOCS_URL: str = '/api/docs'
     DESCRIPTION: str = 'API para gerenciar transacoes bancarias do Knock Bank'
 
     SHOW_SQL: bool = os.getenv('SHOW_SQL')
