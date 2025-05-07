@@ -1,5 +1,5 @@
 run:
-	uv run flask --app knockbankapi run --debug
+	cd src && uv run fastapi dev main.py
 
 install:
 	uv sync
@@ -20,6 +20,12 @@ clean:
 	rm -rf .pytest_cache
 	rm -rf .coverage
 	rm -rf .ruff_cache
+
+revision:
+	cd src && uv run alembic revision --autogenerate -m $(name)
+
+migrate:
+	cd src && uv run alembic upgrade head
 
 image-push:
 	docker build -t davilucciola/knockbank-api .
