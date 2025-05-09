@@ -16,7 +16,8 @@ class AccountRepository:
     ) -> tuple[list[Account], int]:
         query = (
             select(Account, func.count(Account.id).over().label('total'))
-            .join(Person, Account.person)
+            .join(Person, Account.person_id == Person.id)
+            .where(Account.fl_active == True)
             .limit(filter.pageSize)
             .offset(
                 filter.pageIndex - 1
@@ -28,10 +29,9 @@ class AccountRepository:
         if account_id is not None:
             query = query.where(Account.id != account_id)
 
-        if filter.search is not None:
+        if filter.search:
             query = (
-                query.join(Person, Person.id == Account.person_id)
-                .where(Account.fl_active == True)
+                query
                 .where(
                     or_(
                         Person.cpf.like(f'{filter.search}%'),
