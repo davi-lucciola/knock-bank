@@ -1,9 +1,11 @@
+import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
 from app.account.repository import AccountRepository
 
 
 # ------------ Logout User Tests --------------
+@pytest.mark.auth
 def test_logout_unauthorized(client: TestClient):
     response = client.delete('/api/logout')
 
@@ -16,6 +18,7 @@ def test_logout_unauthorized(client: TestClient):
     assert json.get('message') == 'É obrigatório estar autenticado.'
 
 
+@pytest.mark.auth
 def test_logout_successfully(
     client: TestClient, authorization: dict, account_repository: AccountRepository
 ):

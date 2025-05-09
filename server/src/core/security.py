@@ -38,7 +38,7 @@ def get_current_user(
     if auth is None:
         raise HTTPException(
             detail='É obrigatório estar autenticado.',
-            status_code=status.HTTP_401_UNAUTHORIZED
+            status_code=status.HTTP_401_UNAUTHORIZED,
         )
 
     try:

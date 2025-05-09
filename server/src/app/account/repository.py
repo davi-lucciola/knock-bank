@@ -4,6 +4,7 @@ from core.db import get_db
 from sqlalchemy import select, or_, func
 from sqlalchemy.orm import Session
 from app.account.schemas import AccountFilter
+from app.auth.models import User
 from app.account.models import Account, Person
 
 
@@ -30,13 +31,10 @@ class AccountRepository:
             query = query.where(Account.id != account_id)
 
         if filter.search:
-            query = (
-                query
-                .where(
-                    or_(
-                        Person.cpf.like(f'{filter.search}%'),
-                        Person.name.like(f'%{filter.search}%'),
-                    )
+            query = query.where(
+                or_(
+                    Person.cpf.like(f'{filter.search}%'),
+                    Person.name.like(f'%{filter.search}%'),
                 )
             )
 
@@ -54,6 +52,7 @@ class AccountRepository:
     def get_by_cpf(self, cpf: str, active: bool = None) -> Account | None:
         query = (
             select(Account)
+            .join(User, Account.user_id == User.id)
             .join(Person, Account.person_id == Person.id)
             .where(Person.cpf == cpf)
         )

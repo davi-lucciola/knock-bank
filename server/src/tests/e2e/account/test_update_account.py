@@ -1,3 +1,4 @@
+import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
 
@@ -10,6 +11,7 @@ from app.transaction.repository import TransactionRepository
 
 
 # ------------ Update Account Tests --------------
+@pytest.mark.account
 def test_update_account_unauthorized(client: TestClient):
     account_id = 1
     data = {}
@@ -26,6 +28,7 @@ def test_update_account_unauthorized(client: TestClient):
 
 
 # Schema Validation Tests
+@pytest.mark.account
 def test_update_account_missing_values(client: TestClient, authorization: dict):
     account_id = 1
     data = {}
@@ -49,6 +52,7 @@ def test_update_account_missing_values(client: TestClient, authorization: dict):
     # assert errors.get('birthDate')[0] == 'Missing data for required field.'
 
 
+@pytest.mark.account
 def test_update_invalid_account_type_and_withdraw_limit(
     client: TestClient, authorization: dict
 ):
@@ -62,7 +66,7 @@ def test_update_invalid_account_type_and_withdraw_limit(
     )
 
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
-    
+
     json: dict = response.json()
     assert json is not None
 
@@ -81,6 +85,7 @@ def test_update_invalid_account_type_and_withdraw_limit(
 
 
 # Bussiness Rules
+@pytest.mark.account
 def test_update_account_not_found(client: TestClient, authorization: dict):
     account_id = 0
     data = update_account_in()
@@ -96,6 +101,7 @@ def test_update_account_not_found(client: TestClient, authorization: dict):
     assert json.get('message') == 'Conta não encontrada.'
 
 
+@pytest.mark.account
 def test_update_account_forbidden(client: TestClient, authorization: dict):
     account_id = 2
     data = update_account_in()
@@ -112,6 +118,7 @@ def test_update_account_forbidden(client: TestClient, authorization: dict):
     assert json.get('message') == 'Você não tem permissão para editar essa conta.'
 
 
+@pytest.mark.account
 def test_update_account_daily_withdraw_limit_not_possible(
     client: TestClient,
     authorization: AuthorizationHeader,
@@ -150,6 +157,7 @@ def test_update_account_daily_withdraw_limit_not_possible(
     )
 
 
+@pytest.mark.account
 def test_update_account_successfully(
     client: TestClient, authorization: dict, account_repository: AccountRepository
 ):

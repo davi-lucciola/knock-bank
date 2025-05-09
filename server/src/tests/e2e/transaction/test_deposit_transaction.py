@@ -1,3 +1,4 @@
+import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
 from tests.mocks.transaction import money_in
@@ -8,6 +9,7 @@ from app.account.repository import AccountRepository
 
 
 # ------------ Deposit Transactions Tests --------------
+@pytest.mark.transaction
 def test_deposit_unauthorized(client: TestClient):
     # Test
     data = money_in()
@@ -23,6 +25,7 @@ def test_deposit_unauthorized(client: TestClient):
     assert json.get('message') == 'É obrigatório estar autenticado.'
 
 
+@pytest.mark.transaction
 def test_deposit_required_fields(client: TestClient, authorization: dict):
     # Test
     data = {}
@@ -42,6 +45,7 @@ def test_deposit_required_fields(client: TestClient, authorization: dict):
     # assert errors.get('money')[0] == 'Missing data for required field.'
 
 
+@pytest.mark.transaction
 def test_deposit_invalid_money(client: TestClient, authorization: dict):
     # Test
     data = money_in()
@@ -62,6 +66,7 @@ def test_deposit_invalid_money(client: TestClient, authorization: dict):
     # assert errors.get('money')[0] == 'O valor da transação deve ser maior que zero.'
 
 
+@pytest.mark.transaction
 def test_deposit_successfully(
     client: TestClient,
     authorization: dict,

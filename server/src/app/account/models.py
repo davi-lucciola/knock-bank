@@ -49,7 +49,9 @@ class Account(BaseModel):
     user_id: Mapped[int] = Column(
         Long, ForeignKey('users.id'), nullable=False, unique=True
     )
-    user: Mapped['User'] = relationship('User', back_populates='account')
+    user: Mapped['User'] = relationship(
+        'User', cascade='save-update', back_populates='account'
+    )
 
     def __init__(
         self,

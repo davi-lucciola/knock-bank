@@ -1,9 +1,11 @@
+import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
 from tests.conftest import AuthorizationHeader
 
 
 # ------------ Get My Account Test ---------------
+@pytest.mark.account
 def test_get_my_account_unauthorized(client: TestClient):
     response = client.get('/api/account/me')
 
@@ -16,6 +18,7 @@ def test_get_my_account_unauthorized(client: TestClient):
     # assert json.get('message') == 'É obrigatório estar autenticado.'
 
 
+@pytest.mark.account
 def test_get_my_account_successfully(
     client: TestClient, authorization: AuthorizationHeader
 ):
@@ -38,6 +41,7 @@ def test_get_my_account_successfully(
 
 
 # ------------ Get Other Accounts Test ---------------
+@pytest.mark.account
 def test_get_other_accounts_unauthorized(client: TestClient):
     response = client.get('/api/account')
 
@@ -50,6 +54,7 @@ def test_get_other_accounts_unauthorized(client: TestClient):
     assert json.get('message') == 'É obrigatório estar autenticado.'
 
 
+@pytest.mark.account
 def test_get_other_accounts(client: TestClient, authorization: dict):
     response = client.get('/api/account', headers=authorization)
 
@@ -80,7 +85,10 @@ def test_get_other_accounts(client: TestClient, authorization: dict):
     assert data[0].get('person').get('birthDate') is None
 
 
-def test_get_other_accounts_search_find_content_by_name(client: TestClient, authorization: dict):
+@pytest.mark.account
+def test_get_other_accounts_search_find_content_by_name(
+    client: TestClient, authorization: dict
+):
     query = {'search': 'Tester2'}
     response = client.get('/api/account', params=query, headers=authorization)
 
@@ -112,6 +120,7 @@ def test_get_other_accounts_search_find_content_by_name(client: TestClient, auth
     assert data[0].get('person').get('birthDate') is None
 
 
+@pytest.mark.account
 def test_get_other_accounts_search_no_content(client: TestClient, authorization: dict):
     query = {'search': 'NOT EXISTS PERSON'}
     response = client.get('/api/account', params=query, headers=authorization)
