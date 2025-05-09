@@ -3,9 +3,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /knockbank_web
 
-COPY package.json package-lock.json  ./
+COPY package.json yarn.lock  ./
 
-RUN npm install
+RUN yarn install
 
 COPY src ./src
 COPY public ./public

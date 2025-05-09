@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "clean": "rm -rf node_modules .next",
+    "clean": "rm -rf node_modules && rm -rf .next",
     "reinstall": "npm run clean && npm install",
     "image-push": "docker build -t davilucciola/knockbank-web . && docker push davilucciola/knockbank-web:latest"
   },
