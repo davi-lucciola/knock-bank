@@ -1,3 +1,4 @@
+import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
 from core import security
@@ -6,6 +7,7 @@ from app.account.repository import AccountRepository
 
 
 # ------------ Login User Tests --------------
+@pytest.mark.auth
 def test_login_invalid_credentials_wrong_password(client: TestClient):
     payload = TokenIn(cpf='58228952040', password='Test#12')
     response = client.post('/api/login', json=payload.model_dump(mode='json'))
@@ -18,6 +20,7 @@ def test_login_invalid_credentials_wrong_password(client: TestClient):
     assert json.get('message') == 'Credenciais Inválidas.'
 
 
+@pytest.mark.auth
 def test_login_invalid_blocked_account(
     client: TestClient, account_repository: AccountRepository
 ):
@@ -40,6 +43,7 @@ def test_login_invalid_blocked_account(
     )
 
 
+@pytest.mark.auth
 def test_login_invalid_inexistent_user(client: TestClient):
     payload = TokenIn(cpf='58228958676', password='qualquer')
     response = client.post('/api/login', json=payload.model_dump(mode='json'))
@@ -52,6 +56,7 @@ def test_login_invalid_inexistent_user(client: TestClient):
     assert json.get('message') == 'Credenciais Inválidas.'
 
 
+@pytest.mark.auth
 def test_login_successfully(client: TestClient, account_repository: AccountRepository):
     payload = TokenIn(cpf='38162813039', password='Test#123')
     response = client.post('/api/login', json=payload.model_dump(mode='json'))
@@ -69,5 +74,7 @@ def test_login_successfully(client: TestClient, account_repository: AccountRepos
     token_payload = security.decode_token(token)
 
     assert int(token_payload.get('sub')) == 2
+
     account = account_repository.get_by_cpf(payload.cpf)
+    account_repository.db.expire(account)
     assert account.user.token == token

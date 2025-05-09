@@ -1,3 +1,4 @@
+import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
 from app.transaction.models import Transaction
@@ -7,6 +8,7 @@ from app.account.repository import AccountRepository
 
 
 # ------------ Get Transactions Tests --------------
+@pytest.mark.transaction
 def test_get_my_transactions_unauthorized(client: TestClient):
     # Test
     response = client.get('/api/transaction')
@@ -21,6 +23,7 @@ def test_get_my_transactions_unauthorized(client: TestClient):
     assert json.get('message') == 'É obrigatório estar autenticado.'
 
 
+@pytest.mark.transaction
 def test_get_my_transactions(
     client: TestClient,
     authorization: dict,

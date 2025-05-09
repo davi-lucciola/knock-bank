@@ -17,10 +17,10 @@ async def default_lifespan(app: FastAPI):
 def create_app(lifespan: Callable = default_lifespan) -> FastAPI:
     """Creating FastAPI application."""
     app = FastAPI(
-        title=settings.API_TITLE, 
+        title=settings.API_TITLE,
         description=settings.DESCRIPTION,
-        docs_url=settings.DOCS_URL, 
-        lifespan=lifespan
+        docs_url=settings.DOCS_URL,
+        lifespan=lifespan,
     )
 
     routes.init_routes(app)

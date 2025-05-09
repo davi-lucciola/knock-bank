@@ -4,6 +4,7 @@ from core.db import get_db
 from sqlalchemy import select, or_, func
 from sqlalchemy.orm import Session
 from app.account.schemas import AccountFilter
+from app.auth.models import User
 from app.account.models import Account, Person
 
 
@@ -16,7 +17,8 @@ class AccountRepository:
     ) -> tuple[list[Account], int]:
         query = (
             select(Account, func.count(Account.id).over().label('total'))
-            .join(Person, Account.person)
+            .join(Person, Account.person_id == Person.id)
+            .where(Account.fl_active == True)
             .limit(filter.pageSize)
             .offset(
                 filter.pageIndex - 1
@@ -28,15 +30,11 @@ class AccountRepository:
         if account_id is not None:
             query = query.where(Account.id != account_id)
 
-        if filter.search is not None:
-            query = (
-                query.join(Person, Person.id == Account.person_id)
-                .where(Account.fl_active == True)
-                .where(
-                    or_(
-                        Person.cpf.like(f'{filter.search}%'),
-                        Person.name.like(f'%{filter.search}%'),
-                    )
+        if filter.search:
+            query = query.where(
+                or_(
+                    Person.cpf.like(f'{filter.search}%'),
+                    Person.name.like(f'%{filter.search}%'),
                 )
             )
 
@@ -54,6 +52,7 @@ class AccountRepository:
     def get_by_cpf(self, cpf: str, active: bool = None) -> Account | None:
         query = (
             select(Account)
+            .join(User, Account.user_id == User.id)
             .join(Person, Account.person_id == Person.id)
             .where(Person.cpf == cpf)
         )
