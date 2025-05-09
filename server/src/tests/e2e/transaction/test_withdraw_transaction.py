@@ -1,17 +1,19 @@
+import pytest
 from fastapi import status
 from fastapi.testclient import TestClient
 from tests.mocks.transaction import transaction_in
-from app.transaction.enums import TransactionType
 from app.transaction.schemas import TransactionFilter
+from app.transaction.enums import TransactionType
 from app.transaction.repository import TransactionRepository
 from app.account.repository import AccountRepository
 
 
 # ------------ Withdraw Transactions Tests --------------
-def test_transfer_unauthorized(client: TestClient):
+@pytest.mark.transaction
+def test_withdraw_unauthorized(client: TestClient):
     # Test
     data = transaction_in()
-    response = client.post('/api/transaction/transfer', json=data)
+    response = client.post('/api/transaction/withdraw', json=data)
 
     # Assertion
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
@@ -23,11 +25,12 @@ def test_transfer_unauthorized(client: TestClient):
     assert json.get('message') == 'É obrigatório estar autenticado.'
 
 
-def test_transfer_required_fields(client: TestClient, authorization: dict):
+@pytest.mark.transaction
+def test_withdraw_required_fields(client: TestClient, authorization: dict):
     # Test
     data = {}
     response = client.post(
-        '/api/transaction/transfer', json=data, headers=authorization
+        '/api/transaction/withdraw', json=data, headers=authorization
     )
 
     # Assertion
@@ -42,15 +45,15 @@ def test_transfer_required_fields(client: TestClient, authorization: dict):
 
     # errors: dict = json.get('detail').get('json')
     # assert errors.get('money')[0] == 'Missing data for required field.'
-    # assert errors.get('accountId')[0] == 'Missing data for required field.'
 
 
-def test_transfer_invalid_money(client: TestClient, authorization: dict):
+@pytest.mark.transaction
+def test_withdraw_invalid_money(client: TestClient, authorization: dict):
     # Test
     data = transaction_in()
     data['money'] = -200
     response = client.post(
-        '/api/transaction/transfer', json=data, headers=authorization
+        '/api/transaction/withdraw', json=data, headers=authorization
     )
 
     # Assertion
@@ -64,55 +67,18 @@ def test_transfer_invalid_money(client: TestClient, authorization: dict):
     assert json.get('detail') != {}
 
 
-def test_transfer_invalid_account(client: TestClient, authorization: dict):
-    # Test
-    data = transaction_in()
-    data['accountId'] = 1  # AccountId of token
-    response = client.post(
-        '/api/transaction/transfer', json=data, headers=authorization
-    )
-
-    # Assertion
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
-
-    json: dict = response.json()
-    assert json is not None
-
-    assert (
-        json.get('message')
-        == 'Não é possivel realizar uma trânsferencia para sua propria conta, por favor realize um deposito.'
-    )
-
-
-def test_transfer_account_not_found(client: TestClient, authorization: dict):
-    # Test
-    data = transaction_in()
-    data['accountId'] = 0  # AccountId of token
-    response = client.post(
-        '/api/transaction/transfer', json=data, headers=authorization
-    )
-
-    # Assertion
-    assert response.status_code == status.HTTP_404_NOT_FOUND
-
-    json: dict = response.json()
-    assert json is not None
-
-    assert json.get('message') == 'Conta destino não encontrada.'
-
-
-def test_transfer_no_available_balance(
+@pytest.mark.transaction
+def test_withdraw_no_available_balance(
     client: TestClient, authorization: dict, account_repository: AccountRepository
 ):
     data = transaction_in()
-
     account_id = 1
     account = account_repository.get_by_id(account_id)
 
     assert account.balance < data['money']
 
     response = client.post(
-        '/api/transaction/transfer', json=data, headers=authorization
+        '/api/transaction/withdraw', json=data, headers=authorization
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -123,14 +89,14 @@ def test_transfer_no_available_balance(
     assert json.get('message') == 'Saldo insuficiente.'
 
 
-def test_transfer_no_daily_limit_available(
+@pytest.mark.transaction
+def test_withdraw_no_daily_limit_available(
     client: TestClient,
     authorization: dict,
     account_repository: AccountRepository,
 ):
     data = transaction_in()
     data['money'] = 2000
-
     account_id = 1
     account = account_repository.get_by_id(account_id)
 
@@ -141,7 +107,7 @@ def test_transfer_no_daily_limit_available(
     assert account.daily_withdraw_limit < data['money']
 
     response = client.post(
-        '/api/transaction/transfer', json=data, headers=authorization
+        '/api/transaction/withdraw', json=data, headers=authorization
     )
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -152,7 +118,8 @@ def test_transfer_no_daily_limit_available(
     assert json.get('message') == 'Limite de saque diário excedido.'
 
 
-def test_transfer_successfully(
+@pytest.mark.transaction
+def test_withdraw_successfully(
     client: TestClient,
     authorization: dict,
     account_repository: AccountRepository,
@@ -171,14 +138,15 @@ def test_transfer_successfully(
     assert account.daily_withdraw_limit > data['money']
 
     response = client.post(
-        '/api/transaction/transfer', json=data, headers=authorization
+        '/api/transaction/withdraw', json=data, headers=authorization
     )
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.json is not None
 
     json: dict = response.json()
-    assert json.get('message') == 'Transferência realizada com sucesso.'
+    assert json is not None
+
+    assert json.get('message') == 'Saque realizado com sucesso.'
 
     account_repository.db.expire(account)
     assert float(account.balance) == initial_balance - data['money']
@@ -189,11 +157,9 @@ def test_transfer_successfully(
 
     filter = TransactionFilter()
     transactions, total = transaction_repository.get_all(filter, account_id)
-
     assert transactions is not None
     assert total != 0
     assert transactions[0].account_id == account_id
     assert abs(float(transactions[0].money)) == data['money']
     assert transactions[0].transaction_type == TransactionType.WITHDRAW.value[0]
-    assert transactions[0].origin_account.id is not None
-    assert transactions[0].origin_account.id == data['accountId']
+    assert transactions[0].origin_account_id is None

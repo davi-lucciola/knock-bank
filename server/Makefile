@@ -10,7 +10,10 @@ reinstall:
 	make install
 
 test:
-	uv run pytest
+	uv run pytest --cov=./src/app ./src/tests
+
+test-func:
+	uv run pytest -vm $(mark)
 
 lint:
 	uv run ruff format

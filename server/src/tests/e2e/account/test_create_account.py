@@ -1,3 +1,4 @@
+import pytest
 import datetime as dt
 from fastapi import status
 from fastapi.testclient import TestClient
@@ -7,6 +8,7 @@ from tests.mocks.account import create_account_in
 
 # ------------ Create Account Tests --------------
 # Schema Validation Tests
+@pytest.mark.account
 def test_create_account_missing_values(client: TestClient):
     data = {}
     response = client.post('/api/account', json=data)
@@ -26,6 +28,7 @@ def test_create_account_missing_values(client: TestClient):
     # assert errors.get('password')[0] == 'Missing data for required field.'
 
 
+@pytest.mark.account
 def test_create_account_invalid_cpf(client: TestClient):
     data = create_account_in()
     data['cpf'] = '58901211078'
@@ -45,6 +48,7 @@ def test_create_account_invalid_cpf(client: TestClient):
     # assert errors.get('cpf')[0] == 'Cpf inválido.'
 
 
+@pytest.mark.account
 def test_create_account_invalid_password_lenght(client: TestClient):
     data = create_account_in()
     data['password'] = 'tes'
@@ -63,6 +67,7 @@ def test_create_account_invalid_password_lenght(client: TestClient):
     # assert errors.get('password')[0] == 'A senha deve conter no minímo 8 caracteres.'
 
 
+@pytest.mark.account
 def test_create_account_password_with_no_lowercase(client: TestClient):
     data = create_account_in()
     data['password'] = 'TESTE#123'
@@ -81,6 +86,7 @@ def test_create_account_password_with_no_lowercase(client: TestClient):
     # assert errors.get('password')[0] == 'A senha deve conter letras minúsculas.'
 
 
+@pytest.mark.account
 def test_create_account_password_with_no_uppercase(client: TestClient):
     data = create_account_in()
     data['password'] = 'teste#123'
@@ -99,6 +105,7 @@ def test_create_account_password_with_no_uppercase(client: TestClient):
     # assert errors.get('password')[0] == 'A senha deve conter letras maiúsculas.'
 
 
+@pytest.mark.account
 def test_create_account_password_with_no_numbers(client: TestClient):
     data = create_account_in()
     data['password'] = 'teste#ASD'
@@ -117,6 +124,7 @@ def test_create_account_password_with_no_numbers(client: TestClient):
     # assert errors.get('password')[0] == 'A senha deve conter numeros.'
 
 
+@pytest.mark.account
 def test_create_account_password_with_special_characters(client: TestClient):
     data = create_account_in()
     data['password'] = 'Teste1234'
@@ -136,6 +144,7 @@ def test_create_account_password_with_special_characters(client: TestClient):
 
 
 # Bussiness Rules
+@pytest.mark.account
 def test_create_account_minor_not_allowed(client: TestClient):
     data = create_account_in()
     minor_age = dt.date.today() - dt.timedelta(days=365 * 6)  # 6 Years
@@ -152,6 +161,7 @@ def test_create_account_minor_not_allowed(client: TestClient):
     )
 
 
+@pytest.mark.account
 def test_create_account_cpf_already_exists(client: TestClient):
     data = create_account_in()
     data['cpf'] = '58228952040'  # Tester1 CPF
@@ -165,6 +175,7 @@ def test_create_account_cpf_already_exists(client: TestClient):
     assert json.get('message') == 'Esse CPF já tem uma conta cadastrada.'
 
 
+@pytest.mark.account
 def test_create_account_successfully(
     client: TestClient, account_repository: AccountRepository
 ):

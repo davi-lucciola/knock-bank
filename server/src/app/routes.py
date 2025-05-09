@@ -28,8 +28,13 @@ def add_exception_handlers(app: FastAPI):
     @app.exception_handler(Exception)
     def generic_exception_handler(request: Request, exc: Exception):
         logger.error(exc)
-        content = MessageResponse(message='Houve um error ao processar sua solicitação.')
-        return JSONResponse(content.model_dump(mode='json'), status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        content = MessageResponse(
+            message='Houve um error ao processar sua solicitação.'
+        )
+        return JSONResponse(
+            content.model_dump(mode='json'),
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
     @app.exception_handler(RequestValidationError)
     def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -46,7 +51,10 @@ def add_exception_handlers(app: FastAPI):
             details.append(detail)
 
         content = MessageResponse(message='Validation error', detail=details)
-        return JSONResponse(content.model_dump(mode='json'), status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        return JSONResponse(
+            content.model_dump(mode='json'),
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        )
 
     @app.exception_handler(HTTPException)
     def http_exception_handler(request: Request, exc: HTTPException):
