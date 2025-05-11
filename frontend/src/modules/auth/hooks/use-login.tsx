@@ -6,8 +6,10 @@ import { LoginUserPayload, LoginUserSchema } from "@/modules/auth/auth.type";
 import { ApiError } from "@/lib/api";
 import { toast } from "sonner";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export function useLogin() {
+  const router = useRouter();
   const form = useForm<LoginUserPayload>({
     resolver: zodResolver(LoginUserSchema),
     defaultValues: {
@@ -29,6 +31,7 @@ export function useLogin() {
     },
     onSuccess: () => {
       toast.success("Connectado com sucesso.");
+      router.push("/dashboard");
     },
     onError: (error) => {
       toast.error(error.message);

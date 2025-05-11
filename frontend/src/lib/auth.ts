@@ -5,7 +5,7 @@ import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { AuthService } from "@/modules/auth/auth.service";
 import { AccountService } from "@/modules/account/account.service";
-// import { Account } from "@/modules/account/schemas/account";
+import { Account } from "@/modules/account/account.type";
 
 export const nextAuthOptions: NextAuthOptions = {
   providers: [
@@ -32,7 +32,6 @@ export const nextAuthOptions: NextAuthOptions = {
         const authService = new AuthService(api);
 
         try {
-          console.log("Realizando Request...");
           const { accessToken } = await authService.login({
             ...credentials,
           });
@@ -41,6 +40,8 @@ export const nextAuthOptions: NextAuthOptions = {
           const accountService = new AccountService(api);
 
           const account = await accountService.getCurrentAccount();
+          account.accessToken = accessToken;
+
           return account as any;
         } catch (error: unknown) {
           if (error instanceof ApiError) {
@@ -52,17 +53,17 @@ export const nextAuthOptions: NextAuthOptions = {
       },
     }),
   ],
-  // callbacks: {
-  //   async jwt({ token, user }) {
-  //     if (user) {
-  //       token.user = user;
-  //     }
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.user = user;
+      }
 
-  //     return token;
-  //   },
-  //   async session({ session, token }) {
-  //     session.user = token.user as User;
-  //     return session;
-  //   },
-  // },
+      return token;
+    },
+    async session({ session, token }) {
+      session.user = token.user as Account;
+      return session;
+    },
+  },
 };

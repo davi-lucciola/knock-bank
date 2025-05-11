@@ -105,7 +105,10 @@ export function CreateAccountForm() {
                   <FormControl>
                     <DatePicker
                       date={field.value}
-                      onChange={field.onChange}
+                      onChange={(value: Date) => {
+                        const [datePart] = value.toISOString().split("T");
+                        field.onChange(datePart);
+                      }}
                       disableDays={(date) =>
                         date > new Date() || date < new Date("1900-01-01")
                       }

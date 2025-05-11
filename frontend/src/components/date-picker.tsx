@@ -40,15 +40,22 @@ function getLastHundredYears() {
   return lastHundredYears;
 }
 
-export function DatePicker({
-  date: dateProp,
-  disableDays,
-  onChange,
-}: DatePickerProps) {
+function castDateToDisplay(dateToDisplay?: string | Date) {
+  if (dateToDisplay && typeof dateToDisplay == "string") {
+    return new Date(dateToDisplay);
+  } else if (dateToDisplay instanceof Date) {
+    return dateToDisplay;
+  }
+}
+
+export function DatePicker({ date, disableDays, onChange }: DatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const date = typeof dateProp == "string" ? new Date(dateProp) : dateProp;
+  const dateToDisplay = castDateToDisplay(date);
+
   const [displayedMounth, setDisplayedMounth] = useState<Date>(
-    !date ? new Date() : new Date(date.getFullYear(), date.getMonth())
+    !dateToDisplay
+      ? new Date()
+      : new Date(dateToDisplay.getFullYear(), dateToDisplay.getMonth())
   );
 
   return (
@@ -58,11 +65,15 @@ export function DatePicker({
           variant={"outline"}
           className={cn(
             "justify-start text-left font-normal",
-            !date && "text-muted-foreground"
+            !dateToDisplay && "text-muted-foreground"
           )}
         >
           <CalendarIcon />
-          {date ? format(date, "dd/MM/yyyy") : <span>Escolha uma Data</span>}
+          {dateToDisplay ? (
+            format(dateToDisplay, "dd/MM/yyyy")
+          ) : (
+            <span>Escolha uma Data</span>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
@@ -91,7 +102,7 @@ export function DatePicker({
           <Calendar
             mode="single"
             locale={ptBR}
-            selected={date}
+            selected={dateToDisplay}
             onSelect={(event) => {
               onChange(event);
               setIsOpen(false);

@@ -10,8 +10,7 @@ export function useLogout(accessToken: string) {
   const { mutateAsync: logoutMutation, isPending } = useMutation({
     mutationFn: async () => {
       await authService.logout();
-      const response = await signOut();
-      console.log(response);
+      // const response = await signOut();
     },
   });
 

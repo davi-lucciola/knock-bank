@@ -5,7 +5,7 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { Api } from "@/lib/api";
+import { Api, ApiError } from "@/lib/api";
 import { AccountService } from "../account.service";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -33,10 +33,16 @@ export function useCreateAccount() {
     },
     onSuccess: (result) => {
       toast.success(result.message);
+      form.reset();
       setIsOpen(false);
     },
     onError: (error) => {
-      toast.error(error.message);
+      if (error instanceof ApiError) {
+        toast.error(error.message);
+        return;
+      }
+
+      toast.error("Houve um error ao processar sua solicitação.");
     },
   });
 

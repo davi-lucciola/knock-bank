@@ -18,8 +18,8 @@ export enum AccountType {
 
 export type BaseAccount = {
   id: number;
-  flActive: boolean;
   person: Person;
+  flActive: boolean;
 };
 
 export type Account = BaseAccount & {
@@ -27,6 +27,7 @@ export type Account = BaseAccount & {
   dailyWithdrawLimit: number;
   todayWithdraw: number;
   accountType: AccountType;
+  accessToken: string; // Frontend Only
 };
 
 export type AccountQuery = PaginationQuery & {
@@ -85,8 +86,12 @@ export const CreateAccountSchema = z.object({
     .refine((cpfValue: string) => cpf.isValid(cpfValue), "Cpf inválido.")
     .transform((doc) => doc.replace(/\D/g, "")),
   birthDate: z
-    .date({ required_error: "A data de nascimento é obrigatória." })
-    .transform((date) => date.toISOString().split("T")[0]),
+    // .date({ required_error: "A data de nascimento é obrigatória." })
+    // .transform((date) => date.toISOString().split("T")[0]),
+    .string({ required_error: "A data de nascimento é obrigatória." })
+    .refine((val) => /^\d{4}-\d{2}-\d{2}$/.test(val), {
+      message: "Data em um formato inválido. (YYYY-MM-DD)",
+    }),
   accountType: z.number(),
   password: z
     .string()
