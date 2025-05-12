@@ -10,7 +10,7 @@ export function formatCpf(value: string, removeChars: boolean = true): string {
     .replace(/(-\d{2})\d+?$/, "$1");
 }
 
-export function toBrasilianReal(value: number): string | undefined {
+export function toBrasilianReal(value?: number): string | undefined {
   return value != undefined
     ? value.toLocaleString("pt-BR", {
         style: "currency",

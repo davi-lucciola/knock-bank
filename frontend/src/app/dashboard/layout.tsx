@@ -1,6 +1,7 @@
 "use client";
 
 import { Token } from "@/lib/token";
+import { AccountContextProvider } from "@/modules/account/contexts/account-context";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -22,5 +23,5 @@ export default function DashboardLayout({
     }
   }, [session, router]);
 
-  return children;
+  return <AccountContextProvider>{children}</AccountContextProvider>;
 }
