@@ -15,10 +15,7 @@ export const LoginUserSchema = z.object({
     }, "Seu CPF deve conter apenas números.")
     .refine((cpfValue: string) => cpf.isValid(cpfValue), "Cpf inválido.")
     .transform((doc) => doc.replace(/\D/g, "")),
-  password: z
-    .string()
-    .trim()
-    .min(8, "Sua senha deve conter pelo menos 8 caracteres."),
+  password: z.string().trim(),
 });
 
 export type LoginUserPayload = z.infer<typeof LoginUserSchema>;

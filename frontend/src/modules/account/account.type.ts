@@ -27,7 +27,6 @@ export type Account = BaseAccount & {
   dailyWithdrawLimit: number;
   todayWithdraw: number;
   accountType: AccountType;
-  accessToken: string; // Frontend Only
 };
 
 export type AccountQuery = PaginationQuery & {

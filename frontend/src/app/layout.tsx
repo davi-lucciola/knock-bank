@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 import { QueryProvider } from "@/providers/query-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { SessionProvider } from "@/providers/session-provider";
+
 // import { AuthContextProvider } from "@/modules/auth/contexts/auth-context";
 // import { AccountContextProvider } from "@/modules/account/contexts/account-context";
 // import { TransactionContextProvider } from "@/modules/transaction/contexts/transaction-context";
@@ -40,8 +42,10 @@ export default function RootLayout({
         )}
       >
         <ThemeProvider enableSystem={false}>
-          <QueryProvider>{children}</QueryProvider>
-          <Toaster />
+          <SessionProvider>
+            <QueryProvider>{children}</QueryProvider>
+            <Toaster />
+          </SessionProvider>
         </ThemeProvider>
       </body>
     </html>

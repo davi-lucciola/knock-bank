@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { format } from "date-fns";
+import { format, addMinutes } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -42,7 +42,8 @@ function getLastHundredYears() {
 
 function castDateToDisplay(dateToDisplay?: string | Date) {
   if (dateToDisplay && typeof dateToDisplay == "string") {
-    return new Date(dateToDisplay);
+    const timezoneOffset = new Date().getTimezoneOffset();
+    return addMinutes(new Date(dateToDisplay), timezoneOffset);
   } else if (dateToDisplay instanceof Date) {
     return dateToDisplay;
   }
@@ -51,7 +52,6 @@ function castDateToDisplay(dateToDisplay?: string | Date) {
 export function DatePicker({ date, disableDays, onChange }: DatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dateToDisplay = castDateToDisplay(date);
-
   const [displayedMounth, setDisplayedMounth] = useState<Date>(
     !dateToDisplay
       ? new Date()

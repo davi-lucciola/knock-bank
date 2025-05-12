@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
+    "@phosphor-icons/react": "^2.1.7",
     "@radix-ui/react-dialog": "^1.1.13",
     "@radix-ui/react-label": "^2.1.6",
     "@radix-ui/react-popover": "^1.1.13",
@@ -20,6 +21,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
+    "cookies-next": "^5.1.0",
     "cpf-cnpj-validator": "^1.0.3",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.509.0",
