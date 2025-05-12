@@ -1,9 +1,26 @@
-import { SessionProvider } from "@/providers/session-provider";
+"use client";
+
+import { Token } from "@/lib/token";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 export default function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <SessionProvider>{children}</SessionProvider>;
+  const router = useRouter();
+  const session = useSession();
+
+  useEffect(() => {
+    if (session.status == "unauthenticated") {
+      Token.clean();
+      router.push("/");
+      toast.error("Você não está logado, por favor entre com sua conta.");
+    }
+  }, [session, router]);
+
+  return children;
 }

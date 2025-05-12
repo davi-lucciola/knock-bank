@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { cookies } from "next/headers";
+import { TOKEN_KEY } from "@/lib/token";
 import { Api, ApiError } from "@/lib/api";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -37,10 +39,12 @@ export const nextAuthOptions: NextAuthOptions = {
           });
 
           api.setAccessToken(accessToken);
-          const accountService = new AccountService(api);
 
+          const cookie = await cookies();
+          cookie.set(TOKEN_KEY, accessToken);
+
+          const accountService = new AccountService(api);
           const account = await accountService.getCurrentAccount();
-          account.accessToken = accessToken;
 
           return account as any;
         } catch (error: unknown) {
