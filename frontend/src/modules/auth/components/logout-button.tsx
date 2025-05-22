@@ -2,14 +2,9 @@
 
 import { SignOut } from "@phosphor-icons/react";
 import { useLogout } from "@/modules/auth/hooks/use-logout";
-import { AuthService } from "../auth.service";
 
-type LogoutButtonProps = {
-  authService: AuthService;
-};
-
-export function LogoutButton({ authService }: LogoutButtonProps) {
-  const { handleLogout } = useLogout(authService);
+export function LogoutButton() {
+  const { handleLogout } = useLogout();
 
   return (
     <button className="hover:cursor-pointer">

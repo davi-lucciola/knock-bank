@@ -1,11 +1,12 @@
 "use client";
 
-import { Token } from "@/lib/token";
-import { AccountContextProvider } from "@/modules/account/contexts/account-context";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { toast } from "sonner";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { Token } from "@/lib/token";
+import { ServiceProvider } from "@/providers/service.provider";
+import { AccountContextProvider } from "@/modules/account/contexts/account-context";
 
 export default function DashboardLayout({
   children,
@@ -23,5 +24,9 @@ export default function DashboardLayout({
     }
   }, [session, router]);
 
-  return <AccountContextProvider>{children}</AccountContextProvider>;
+  return (
+    <ServiceProvider>
+      <AccountContextProvider>{children}</AccountContextProvider>
+    </ServiceProvider>
+  );
 }
