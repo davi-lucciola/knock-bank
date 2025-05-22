@@ -1,10 +1,5 @@
-"use client";
-
-import { Api } from "@/lib/api";
-import { Token } from "@/lib/token";
-import { AuthService } from "@/modules/auth/auth.service";
-import { Menu } from "@/app/dashboard/components/menu";
-import { Header } from "@/app/dashboard/components/header";
+import { Menu } from "./components/menu";
+import { Header } from "./components/header";
 import { Content } from "./components/content";
 
 // import { useSession } from "next-auth/react";
@@ -20,14 +15,9 @@ import { Content } from "./components/content";
 // import { Account } from "@/modules/account/schemas/account";
 
 export default function DashboardPage() {
-  const accessToken = Token.get();
-
-  const api = new Api(accessToken);
-  const authService = new AuthService(api);
-
   return (
     <div className="flex flex-row w-screen min-h-screen">
-      <Menu authService={authService} />
+      <Menu />
       <section className="bg-light-gray flex flex-col w-full ps-24">
         <Header />
         <Content />

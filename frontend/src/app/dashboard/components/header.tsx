@@ -1,3 +1,5 @@
+"use client";
+
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCurrentAccount } from "@/modules/auth/hooks/use-current-account";
 

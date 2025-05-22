@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
-import "./globals.css";
 
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
-import { QueryProvider } from "@/providers/query-provider";
-import { ThemeProvider } from "@/providers/theme-provider";
-import { SessionProvider } from "@/providers/session-provider";
-
-// import { AuthContextProvider } from "@/modules/auth/contexts/auth-context";
-// import { AccountContextProvider } from "@/modules/account/contexts/account-context";
-// import { TransactionContextProvider } from "@/modules/transaction/contexts/transaction-context";
+import { QueryProvider } from "@/providers/query.provider";
+import { ThemeProvider } from "@/providers/theme.provider";
+import { SessionProvider } from "@/providers/session.provider";
+import "./globals.css";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -30,10 +26,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // <AuthContextProvider>
-    //   <AccountContextProvider>
-    //     <TransactionContextProvider>
-
     <html lang="pt-BR" suppressHydrationWarning={true}>
       <body
         className={cn(
@@ -49,9 +41,5 @@ export default function RootLayout({
         </ThemeProvider>
       </body>
     </html>
-
-    //     </TransactionContextProvider>
-    //   </AccountContextProvider>
-    // </AuthContextProvider>
   );
 }

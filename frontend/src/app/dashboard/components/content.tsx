@@ -1,3 +1,5 @@
+"use client";
+
 import { Skeleton } from "@/components/ui/skeleton";
 import { BalanceCard } from "@/modules/account/components/balance-card";
 import { useCurrentAccount } from "@/modules/auth/hooks/use-current-account";
