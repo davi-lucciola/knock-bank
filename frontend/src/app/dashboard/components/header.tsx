@@ -1,10 +1,10 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { useCurrentAccount } from "@/modules/auth/hooks/use-current-account";
+import { useAccount } from "@/modules/account/contexts/account-context";
 
 export function Header() {
-  const { account, isPending } = useCurrentAccount();
+  const { account, isPending } = useAccount();
 
   return (
     <header className="bg-white h-20 w-full py-3 px-8">

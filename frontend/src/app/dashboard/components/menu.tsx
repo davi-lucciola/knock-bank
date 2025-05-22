@@ -13,9 +13,7 @@ export function Menu() {
           <li>
             <SquaresFour size={32} className="fill-primary" />
           </li>
-          {/* <li>
-            <MyAccount account={account} />
-          </li> */}
+          <li>{/* <MyAccount /> */}</li>
         </ul>
       </nav>
       <LogoutButton />
