@@ -28,8 +28,8 @@ export function useCreateAccount() {
   });
 
   const { mutateAsync: createAccountMutation, isPending } = useMutation({
-    mutationFn: async (data: CreateAccountPayload) => {
-      return await accountService.createAccount(data);
+    mutationFn: (data: CreateAccountPayload) => {
+      return accountService.createAccount(data);
     },
     onSuccess: (result) => {
       toast.success(result.message);

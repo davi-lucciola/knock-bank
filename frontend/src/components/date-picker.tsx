@@ -28,6 +28,7 @@ type DatePickerProps = {
   disableDays?: Matcher | Matcher[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onChange: (...event: any[]) => void;
+  disabled?: boolean;
 };
 
 function getLastHundredYears() {
@@ -49,7 +50,12 @@ function castDateToDisplay(dateToDisplay?: string | Date) {
   }
 }
 
-export function DatePicker({ date, disableDays, onChange }: DatePickerProps) {
+export function DatePicker({
+  date,
+  disableDays,
+  onChange,
+  disabled = false,
+}: DatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dateToDisplay = castDateToDisplay(date);
   const [displayedMounth, setDisplayedMounth] = useState<Date>(
@@ -62,6 +68,7 @@ export function DatePicker({ date, disableDays, onChange }: DatePickerProps) {
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button
+          disabled={disabled}
           variant={"outline"}
           className={cn(
             "justify-start text-left font-normal",
