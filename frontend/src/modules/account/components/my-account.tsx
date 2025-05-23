@@ -34,6 +34,7 @@ import { MoneyInput } from "@/components/money-input";
 import { ArrowLeft, Lock, Pencil, User } from "@phosphor-icons/react/dist/ssr";
 import { useAccount } from "@/modules/account/contexts/account-context";
 import { useUpdateAccount } from "@/modules/account/hooks/use-update-account";
+import { useBlockAccount } from "../hooks/use-block-account";
 
 export function MyAccount() {
   const { account, isPending } = useAccount();
@@ -46,6 +47,8 @@ export function MyAccount() {
     handleUpdateAccount,
     isPending: isUpdatePending,
   } = useUpdateAccount(account);
+
+  const { handleBlockAccount } = useBlockAccount(account);
 
   return (
     <Dialog
@@ -199,7 +202,7 @@ export function MyAccount() {
                     type="button"
                     variant="destructive"
                     className="flex gap-2"
-                    // onClick={onBlockAccount}
+                    onClick={handleBlockAccount}
                   >
                     Bloquear
                     <Lock size={24} className="fill-white" />
