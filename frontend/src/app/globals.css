@@ -25,7 +25,9 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-destructive-hover: var(--destructive-hover);
   --color-success: var(--success);
+  --color-success-hover: var(--success-hover);
   --color-gray-100: var(--color-gray-100);
   --color-gray-200: var(--color-gray-200);
   --color-light-gray: var(--color-light-gray);
@@ -92,7 +94,7 @@
   --sidebar-ring: oklch(0.704 0.04 256.788);
 
   --success: #50af47;
-  --success-hover: #44943d;
+  --success-hover: #53a74b;
 }
 
 .dark {
