@@ -2,6 +2,7 @@
 
 import { SquaresFour } from "@phosphor-icons/react";
 import { KnockBankLogo } from "@/components/knock-bank-logo";
+import { MyAccount } from "@/modules/account/components/my-account";
 import { LogoutButton } from "@/modules/auth/components/logout-button";
 
 export function Menu() {
@@ -13,7 +14,9 @@ export function Menu() {
           <li>
             <SquaresFour size={32} className="fill-primary" />
           </li>
-          <li>{/* <MyAccount /> */}</li>
+          <li>
+            <MyAccount />
+          </li>
         </ul>
       </nav>
       <LogoutButton />

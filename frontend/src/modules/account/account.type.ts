@@ -33,36 +33,24 @@ export type AccountQuery = PaginationQuery & {
   search: string;
 };
 
-export const UpdateAccountSchema = z
-  .object({
-    name: z
-      .string()
-      .trim()
-      .min(4, "Seu nome deve conter pelo menos 4 caracteres."),
-    birthDate: z.coerce.date({
-      errorMap: (issue, { defaultError }) => ({
-        message:
-          issue.code === "invalid_date"
-            ? "A data de nascimento é obrigatória."
-            : defaultError,
-      }),
+export const UpdateAccountSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(4, "Seu nome deve conter pelo menos 4 caracteres."),
+  birthDate: z
+    .string({ required_error: "A data de nascimento é obrigatória." })
+    .refine((val) => /^\d{4}-\d{2}-\d{2}$/.test(val), {
+      message: "Data em um formato inválido. (YYYY-MM-DD)",
     }),
-    accountType: z.number(),
-    dailyWithdrawLimit: z.coerce
-      .string()
-      .transform((value) =>
-        isNaN(Number(value))
-          ? Number(value.replace(/[^0-9]/g, "")) / 100
-          : Number(value)
-      )
-      .refine(
-        (value) => value >= 0,
-        "Você só pode transferir valores positivos."
-      ),
-  })
-  .transform(({ birthDate, ...props }) => {
-    return { birthDate: birthDate.toISOString().split("T")[0], ...props };
-  });
+  accountType: z.number(),
+  dailyWithdrawLimit: z.coerce
+    .number()
+    .refine(
+      (value) => value >= 0,
+      "Você só pode transferir valores positivos."
+    ),
+});
 
 export type UpdateAccountPayload = z.infer<typeof UpdateAccountSchema>;
 
