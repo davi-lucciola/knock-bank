@@ -20,8 +20,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 export function BalanceCard() {
   const { account, isPending } = useAccount();
 
-  if (isPending) {
-    return <Skeleton className="h-full shadow-sm lg:col-span-2" />;
+  if (isPending || !account) {
+    return <Skeleton className="h-full shadow-lg lg:col-span-2" />;
   }
 
   return (
@@ -33,12 +33,12 @@ export function BalanceCard() {
       <CardContent className="w-full flex flex-col items-center gap-12">
         <Hiddleble className="w-48 h-12 shadow-lg">
           <span className="text-5xl font-bold">
-            {toBrasilianReal(account?.balance)}
+            {toBrasilianReal(account.balance)}
           </span>
         </Hiddleble>
         <DailyWithdrawProgress
-          todayWithdraw={account?.todayWithdraw}
-          dailyWithdrawLimit={account?.dailyWithdrawLimit}
+          todayWithdraw={account.todayWithdraw}
+          dailyWithdrawLimit={account.dailyWithdrawLimit}
         />
       </CardContent>
       <CardFooter className="w-full flex flex-col lg:flex-row gap-8">

@@ -63,7 +63,7 @@ export function BankStatmentCard() {
 
   if (isPending || !transactions) {
     return (
-      <Skeleton className="h-full shadow-sm justify-between lg:row-span-2 lg:col-start-3" />
+      <Skeleton className="h-full shadow-lg justify-between lg:row-span-2 lg:col-start-3" />
     );
   }
 
