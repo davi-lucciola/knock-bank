@@ -1,5 +1,6 @@
 "use client";
 
+import { Token } from "@/lib/token";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
@@ -15,6 +16,7 @@ export function useLogout() {
       router.push("/");
       await signOut({ redirect: false });
     },
+    onSuccess: () => Token.clean(),
   });
 
   const handleLogout = () => logoutMutation();
