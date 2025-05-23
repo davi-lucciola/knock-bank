@@ -1,75 +1,42 @@
 "use client";
 
-// import { useContext, useState } from "react";
 import {
   Dialog,
   DialogContent,
-  // DialogFooter,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-// import {
-//   Form,
-//   FormControl,
-//   FormDescription,
-//   FormField,
-//   FormItem,
-//   FormLabel,
-//   FormMessage,
-// } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-// import { MoneyInput } from "@/components/money-input";
+import { MoneyInput } from "@/components/money-input";
 import { ArrowBendLeftDown } from "@phosphor-icons/react/dist/ssr";
-// import { useToast } from "@/components/ui/use-toast";
-// import {
-//   BasicTransferencePayload,
-//   BasicTransferenceSchema,
-// } from "@/modules/transaction/schemas/transference";
-// import { useForm } from "react-hook-form";
-// import { zodResolver } from "@hookform/resolvers/zod";
-// import { TransactionContext } from "@/modules/transaction/contexts/transaction-context";
-// import { AccountContext } from "@/modules/account/contexts/account-context";
+import { useWithdraw } from "../hooks/use-withdraw";
+import { Loader2 } from "lucide-react";
 
 export function WithdrawForm() {
-  // const { toast } = useToast();
-  // const [open, setOpen] = useState<boolean>(false);
-  // const { withdraw, fetchTransactions } = useContext(TransactionContext);
-  // const form = useForm<BasicTransferencePayload>({
-  //   resolver: zodResolver(BasicTransferenceSchema),
-  // });
-
-  // const onSubmit = async (payload: BasicTransferencePayload) => {
-  //   const toastDurationInMiliseconds = 3 * 1000; // 3 Seconds
-  //   try {
-  //     const response = await withdraw(payload);
-  //     toast({
-  //       title: response.message,
-  //       variant: "success",
-  //       duration: toastDurationInMiliseconds,
-  //     });
-  //     fetchTransactions();
-  //     setOpen(false);
-  //   } catch (error) {
-  //     if (error instanceof Error) {
-  //       toast({
-  //         title: error.message,
-  //         variant: "destructive",
-  //         duration: toastDurationInMiliseconds,
-  //       });
-  //     }
-  //   }
-  // };
+  const { form, isPending, handleWithdraw, modal } = useWithdraw();
 
   return (
     <Dialog
-      // open={open}
-      // onOpenChange={(open) => {
-      //   setOpen(open);
-      //   form.setValue("money", 0);
-      // }}
+      open={modal.isOpen}
+      onOpenChange={(open) => {
+        modal.setIsOpen(open);
+        form.setValue("money", 0);
+      }}
     >
       <DialogTrigger asChild>
         <Button
-          className="w-full h-16 text-xl flex gap-4"
+          className="w-full h-16 text-xl flex gap-4 hover:cursor-pointer"
           variant="destructive"
         >
           Sacar
@@ -77,9 +44,12 @@ export function WithdrawForm() {
         </Button>
       </DialogTrigger>
       <DialogContent>
-        {/* <Form {...form}>
+        <DialogHeader>
+          <DialogTitle> Sacar </DialogTitle>
+        </DialogHeader>
+        <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(handleWithdraw)}
             autoComplete="off"
             className="flex flex-col gap-4"
           >
@@ -90,7 +60,17 @@ export function WithdrawForm() {
                 <FormItem>
                   <FormLabel> Valor </FormLabel>
                   <FormControl>
-                    <MoneyInput {...field} />
+                    <MoneyInput
+                      value={field.value}
+                      onChange={(e) => {
+                        const cleanedValue = e.target.value
+                          .slice(3)
+                          .replaceAll(".", "")
+                          .replaceAll(",", ".");
+
+                        field.onChange(Number(cleanedValue));
+                      }}
+                    />
                   </FormControl>
                   <FormDescription>Valor que deseja sacar.</FormDescription>
                   <FormMessage />
@@ -101,13 +81,15 @@ export function WithdrawForm() {
               <Button
                 type="submit"
                 variant="destructive"
-                className="w-full max-w-52"
+                disabled={isPending}
+                className="w-full max-w-52 hover:cursor-pointer"
               >
                 Sacar
+                {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               </Button>
             </DialogFooter>
           </form>
-        </Form> */}
+        </Form>
       </DialogContent>
     </Dialog>
   );
