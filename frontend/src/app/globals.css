@@ -28,9 +28,9 @@
   --color-destructive-hover: var(--destructive-hover);
   --color-success: var(--success);
   --color-success-hover: var(--success-hover);
-  --color-gray-100: var(--color-gray-100);
-  --color-gray-200: var(--color-gray-200);
-  --color-light-gray: var(--color-light-gray);
+  --color-gray-100: var(--gray-100);
+  --color-gray-200: var(--gray-200);
+  --color-light-gray: var(--light-gray);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);

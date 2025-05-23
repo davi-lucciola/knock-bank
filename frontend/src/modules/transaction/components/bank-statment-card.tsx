@@ -63,13 +63,13 @@ export function BankStatmentCard() {
 
   if (isPending || !transactions) {
     return (
-      <Skeleton className="h-full justify-between lg:row-span-2 lg:col-start-3" />
+      <Skeleton className="h-full shadow-sm justify-between lg:row-span-2 lg:col-start-3" />
     );
   }
 
   return (
-    <Card className="h-full flex flex-col justify-between lg:row-span-2 lg:col-start-3">
-      <CardHeader className="text-2xl font-semibold">Extrato</CardHeader>
+    <Card className="h-full p-0 gap-0 flex flex-col justify-between lg:row-span-2 lg:col-start-3">
+      <CardHeader className="text-2xl font-semibold p-6">Extrato</CardHeader>
       <CardContent className="overflow-auto max-h-176 pb-0 flex-1">
         {transactions.data.length != 0 ? (
           <TransactionList transactions={transactions.data} />
