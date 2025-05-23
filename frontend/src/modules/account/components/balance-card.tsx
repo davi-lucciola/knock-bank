@@ -21,7 +21,7 @@ export function BalanceCard() {
   const { account, isPending } = useAccount();
 
   if (isPending) {
-    return <Skeleton className="h-full lg:col-span-2" />;
+    return <Skeleton className="h-full shadow-sm lg:col-span-2" />;
   }
 
   return (
