@@ -6,7 +6,6 @@ import { Api, ApiError } from "@/lib/api";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { AuthService } from "@/modules/auth/auth.service";
-import { AccountService } from "@/modules/account/account.service";
 import { Account } from "@/modules/account/account.type";
 
 export const nextAuthOptions: NextAuthOptions = {
@@ -43,10 +42,7 @@ export const nextAuthOptions: NextAuthOptions = {
           const cookie = await cookies();
           cookie.set(TOKEN_KEY, accessToken);
 
-          const accountService = new AccountService(api);
-          const account = await accountService.getCurrentAccount();
-
-          return account as any;
+          return {} as any; // Dont need the account state stored in NextAuth
         } catch (error: unknown) {
           if (error instanceof ApiError) {
             throw error;
