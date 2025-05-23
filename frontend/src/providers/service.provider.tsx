@@ -5,7 +5,7 @@ import { Api } from "@/lib/api";
 import { Token } from "@/lib/token";
 import { AuthService } from "@/modules/auth/auth.service";
 import { AccountService } from "@/modules/account/account.service";
-import { TransactionService } from "@/modules/transaction/services/transaction-service";
+import { TransactionService } from "@/modules/transaction/transaction.service";
 
 type IServiceContext = {
   authService: AuthService;

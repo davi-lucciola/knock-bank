@@ -4,7 +4,7 @@ import {
   Transaction,
   TransactionMonthResume,
   TransactionQuery,
-} from "@/modules/transaction/schemas/transaction";
+} from "@/modules/transaction/transaction.type";
 import {
   BasicTransferencePayload,
   TransferencePayload,

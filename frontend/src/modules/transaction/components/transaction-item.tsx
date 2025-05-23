@@ -3,7 +3,7 @@
 import {
   Transaction,
   TransactionType,
-} from "@/modules/transaction/schemas/transaction";
+} from "@/modules/transaction/transaction.type";
 import { Hiddleble } from "@/components/hiddeble";
 import { toBrasilianReal } from "@/lib/masks";
 
