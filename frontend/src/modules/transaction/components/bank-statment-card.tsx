@@ -1,6 +1,5 @@
 "use client";
 
-// import { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -16,50 +15,12 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useQuery } from "@tanstack/react-query";
-import { useService } from "@/providers/service.provider";
 import { Skeleton } from "@/components/ui/skeleton";
-
-function getPageNumbers(totalPages?: number, pageIndex?: number): number[] {
-  return Array.from(new Array(totalPages ?? 4), (_, index) => index + 1).filter(
-    (page) => {
-      const itemsQuantity = 4;
-      if (
-        pageIndex! > itemsQuantity / 2 &&
-        pageIndex! < totalPages! - itemsQuantity / 2
-      ) {
-        return (
-          page > pageIndex! - itemsQuantity / 2 &&
-          page <= pageIndex! + itemsQuantity / 2
-        );
-      } else if (pageIndex! > totalPages! - itemsQuantity) {
-        return page > totalPages! - itemsQuantity;
-      } else {
-        return page <= itemsQuantity;
-      }
-    }
-  );
-}
+import { getPageNumbers } from "@/lib/pagination";
+import { useTransactions } from "../hooks/use-transactions";
 
 export function BankStatmentCard() {
-  const { transactionService } = useService();
-
-  const { data: transactions, isPending } = useQuery({
-    queryKey: ["transactions"],
-    queryFn: () => transactionService.getMyTransactions({}),
-  });
-
-  // const changePage = (page: number) => {
-  //   setTransactionQuery({
-  //     ...transactionQuery,
-  //     pageIndex: page,
-  //   });
-  // };
-
-  const pagesNumberArray = getPageNumbers(
-    transactions?.totalPages,
-    transactions?.pageIndex
-  );
+  const { transactions, isPending, changePage } = useTransactions();
 
   if (isPending || !transactions) {
     return (
@@ -80,49 +41,61 @@ export function BankStatmentCard() {
         )}
       </CardContent>
       <CardFooter className="p-2">
-        <Pagination>
-          <PaginationContent className="w-full justify-around lg:justify-center">
-            <PaginationItem className="hover:cursor-pointer shrink">
-              <PaginationPrevious
-              // onClick={() => {
-              //   const newPageIndex =
-              //     transactionQuery.pageIndex! > 1
-              //       ? transactionQuery.pageIndex! - 1
-              //       : transactionQuery.pageIndex!;
-
-              //   changePage(newPageIndex);
-              // }}
-              />
-            </PaginationItem>
-            {pagesNumberArray.map((page: number, index: number) => (
-              <PaginationItem key={index} className="hover:cursor-pointer">
-                <PaginationLink
-                  // onClick={(event: any) => {
-                  //   event.preventDefault();
-                  //   changePage(page);
-                  // }}
-                  isActive={page == transactions?.pageIndex}
-                  className="lg:w-full lg:min-w-5 xl:shrink-0 xl:w-10"
-                >
-                  {page}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            <PaginationItem className="hover:cursor-pointer shrink">
-              <PaginationNext
-              // onClick={() => {
-              //   const newPageIndex =
-              //     transactionQuery.pageIndex! < transactions?.totalPages!
-              //       ? transactionQuery.pageIndex! + 1
-              //       : transactionQuery.pageIndex!;
-
-              //   changePage(newPageIndex);
-              // }}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+        <BankStatmentPagination
+          pageIndex={transactions.pageIndex}
+          totalPages={transactions.totalPages}
+          changePage={changePage}
+        />
       </CardFooter>
     </Card>
+  );
+}
+
+type BankStatmentPaginationProps = {
+  pageIndex: number;
+  totalPages: number;
+  changePage: (page: number) => void;
+};
+
+function BankStatmentPagination({
+  pageIndex,
+  totalPages,
+  changePage,
+}: BankStatmentPaginationProps) {
+  const pagesNumberArray = getPageNumbers(pageIndex, totalPages);
+
+  return (
+    <Pagination>
+      <PaginationContent className="w-full justify-around lg:justify-center">
+        <PaginationItem className="hover:cursor-pointer shrink">
+          <PaginationPrevious
+            onClick={() => {
+              const newPageIndex = pageIndex != 1 ? pageIndex - 1 : pageIndex;
+              changePage(newPageIndex);
+            }}
+          />
+        </PaginationItem>
+        {pagesNumberArray.map((page: number, index: number) => (
+          <PaginationItem key={index} className="hover:cursor-pointer">
+            <PaginationLink
+              onClick={() => changePage(page)}
+              isActive={page == pageIndex}
+              className="lg:w-full lg:min-w-5 xl:shrink-0 xl:w-10"
+            >
+              {page}
+            </PaginationLink>
+          </PaginationItem>
+        ))}
+        <PaginationItem className="hover:cursor-pointer shrink">
+          <PaginationNext
+            onClick={() => {
+              const newPageIndex =
+                pageIndex != totalPages ? pageIndex + 1 : pageIndex;
+              changePage(newPageIndex);
+            }}
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
   );
 }
