@@ -2,7 +2,6 @@
 
 import { createContext, useContext } from "react";
 import { Api } from "@/lib/api";
-import { Token } from "@/lib/token";
 import { AuthService } from "@/modules/auth/auth.service";
 import { AccountService } from "@/modules/account/account.service";
 import { TransactionService } from "@/modules/transaction/transaction.service";
@@ -15,8 +14,15 @@ type IServiceContext = {
 
 export const ServiceContext = createContext({} as IServiceContext);
 
-export function ServiceProvider({ children }: { children: React.ReactNode }) {
-  const accessToken = Token.get();
+type ServiceProviderProps = {
+  children: React.ReactNode;
+  accessToken?: string;
+};
+
+export function ServiceProvider({
+  children,
+  accessToken,
+}: ServiceProviderProps) {
   const api = new Api(accessToken);
 
   const authService = new AuthService(api);
