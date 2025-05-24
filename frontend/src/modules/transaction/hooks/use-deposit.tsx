@@ -1,7 +1,6 @@
 import { toast } from "sonner";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ApiError } from "@/lib/api";
 import {
   BasicTransferencePayload,
   BasicTransferenceSchema,
@@ -9,6 +8,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useService } from "@/providers/service.provider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ApiError } from "@/lib/api";
 
 export function useDeposit() {
   const queryClient = useQueryClient();

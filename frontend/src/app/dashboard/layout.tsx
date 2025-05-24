@@ -15,17 +15,22 @@ export default function DashboardLayout({
 }>) {
   const router = useRouter();
   const session = useSession();
+  const accessToken = Token.get();
 
   useEffect(() => {
-    if (session.status == "unauthenticated") {
+    const cleanSession = () => {
       Token.clean();
       router.push("/");
       toast.error("Você não está logado, por favor entre com sua conta.");
+    };
+
+    if (!accessToken || session.status == "unauthenticated") {
+      return cleanSession();
     }
-  }, [session, router]);
+  }, [session, router, accessToken]);
 
   return (
-    <ServiceProvider>
+    <ServiceProvider accessToken={accessToken}>
       <AccountContextProvider>{children}</AccountContextProvider>
     </ServiceProvider>
   );
