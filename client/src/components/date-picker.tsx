@@ -1,4 +1,17 @@
+"use client";
+
 import { useState } from "react";
+import { format, addMinutes } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -7,99 +20,106 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
-import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Matcher } from "react-day-picker";
 
 type DatePickerProps = {
   date: string | Date;
-  disabled?: boolean;
+  disableDays?: Matcher | Matcher[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onChange: (...event: any[]) => void;
+  disabled?: boolean;
 };
 
-function getLastHundredYears(currentYear: number) {
+function getLastHundredYears() {
   const lastHundredYears = [];
+  const currentYear = new Date().getFullYear();
+
   for (let year = currentYear; year >= currentYear - 100; year--) {
     lastHundredYears.push(year);
   }
   return lastHundredYears;
 }
 
-export function DatePicker({ date, disabled, onChange }: DatePickerProps) {
-  const currentDate = new Date();
+function castDateToDisplay(dateToDisplay?: string | Date) {
+  if (dateToDisplay && typeof dateToDisplay == "string") {
+    const timezoneOffset = new Date().getTimezoneOffset();
+    return addMinutes(new Date(dateToDisplay), timezoneOffset);
+  } else if (dateToDisplay instanceof Date) {
+    return dateToDisplay;
+  }
+}
+
+export function DatePicker({
+  date,
+  disableDays,
+  onChange,
+  disabled = false,
+}: DatePickerProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dateToDisplay = castDateToDisplay(date);
   const [displayedMounth, setDisplayedMounth] = useState<Date>(
-    new Date(currentDate.getFullYear(), currentDate.getMonth())
+    !dateToDisplay
+      ? new Date()
+      : new Date(dateToDisplay.getFullYear(), dateToDisplay.getMonth())
   );
 
-  if (typeof date == "object") {
-    date = date.toISOString();
-  }
-
   return (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button
+          disabled={disabled}
           variant={"outline"}
-          disabled={disabled ?? false}
           className={cn(
-            "pl-3 text-left font-normal",
-            !date && "text-muted-foreground"
+            "justify-start text-left font-normal",
+            !dateToDisplay && "text-muted-foreground"
           )}
         >
-          {date ? (
-            format(parseISO(date), "dd/MM/yyyy")
+          <CalendarIcon />
+          {dateToDisplay ? (
+            format(dateToDisplay, "dd/MM/yyyy")
           ) : (
-            <span>Escolha uma data</span>
+            <span>Escolha uma Data</span>
           )}
-          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <div className="px-3 pt-3">
-          <Select
-            onValueChange={(value: string) =>
-              setDisplayedMounth(
-                new Date(Number(value), displayedMounth.getMonth())
-              )
-            }
-            defaultValue={`${displayedMounth.getFullYear()}`}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder={`${displayedMounth.getFullYear()}`} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {getLastHundredYears(currentDate.getFullYear()).map(
-                  (year, index) => (
-                    <SelectItem key={index} value={`${year}`}>
-                      {year}
-                    </SelectItem>
-                  )
-                )}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-        <Calendar
-          mode="single"
-          month={displayedMounth}
-          onMonthChange={(mounth) => setDisplayedMounth(mounth)}
-          selected={new Date(date)}
-          onSelect={onChange}
-          disabled={(date) =>
-            date > new Date() || date < new Date("1900-01-01")
+      <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
+        <Select
+          value={`${displayedMounth.getFullYear()}`}
+          onValueChange={(value: string) =>
+            setDisplayedMounth(
+              new Date(Number(value), displayedMounth.getMonth())
+            )
           }
-          initialFocus
-          locale={ptBR}
-        />
+        >
+          <SelectTrigger className="w-full hover:co">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {getLastHundredYears().map((year, index) => (
+                <SelectItem key={index} value={`${year}`}>
+                  {year}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <div className="rounded-md border">
+          <Calendar
+            mode="single"
+            locale={ptBR}
+            selected={dateToDisplay}
+            onSelect={(event) => {
+              onChange(event);
+              setIsOpen(false);
+            }}
+            disabled={disableDays}
+            initialFocus
+            month={displayedMounth}
+            onMonthChange={(mounth) => setDisplayedMounth(mounth)}
+          />
+        </div>
       </PopoverContent>
     </Popover>
   );

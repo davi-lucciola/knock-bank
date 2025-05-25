@@ -1,8 +1,5 @@
 "use client";
 
-import { ChangeEvent, useContext, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
   DialogContent,
@@ -28,106 +25,45 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Account,
-  AccountType,
-  UpdateAccountPayload,
-  UpdateAccountSchema,
-} from "@/modules/account/schemas/account";
+import { Loader2 } from "lucide-react";
+import { AccountType } from "@/modules/account/account.type";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/date-picker";
 import { MoneyInput } from "@/components/money-input";
 import { ArrowLeft, Lock, Pencil, User } from "@phosphor-icons/react/dist/ssr";
-import { AccountContext } from "@/modules/account/contexts/account-context";
-import { useToast } from "@/components/ui/use-toast";
-import { AuthContext } from "@/modules/auth/contexts/auth-context";
-import { useRouter } from "next/navigation";
+import { useAccount } from "@/modules/account/contexts/account-context";
+import { useUpdateAccount } from "@/modules/account/hooks/use-update-account";
+import { useBlockAccount } from "../hooks/use-block-account";
 
-export function MyAccount({ account }: { account: Account | null }) {
-  const router = useRouter();
-  const { toast } = useToast();
-  const { logout } = useContext(AuthContext);
-  const { fetchAccount, updateAccount, blockAccount } =
-    useContext(AccountContext);
-  const [open, setOpen] = useState<boolean>(false);
-  const [editMode, setEditMode] = useState<boolean>(false);
+export function MyAccount() {
+  const { account, isPending } = useAccount();
 
-  const onEditChange = (event: any) => {
-    event.preventDefault();
-    setEditMode(!editMode);
-  };
+  const {
+    form,
+    modal,
+    editMode,
+    toggleEditMode,
+    handleUpdateAccount,
+    isPending: isUpdatePending,
+  } = useUpdateAccount(account);
 
-  const form = useForm<UpdateAccountPayload>({
-    resolver: zodResolver(UpdateAccountSchema),
-  });
-
-  useEffect(() => {
-    if (account) {
-      form.setValue("name", account.person.name);
-      form.setValue("birthDate", account.person.birthDate!);
-      form.setValue("accountType", account.accountType);
-      form.setValue("dailyWithdrawLimit", account.dailyWithdrawLimit);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account]);
-
-  const onSubmit = async (payload: UpdateAccountPayload) => {
-    const toastDurationInMiliseconds = 3 * 1000; // 3 Seconds
-    try {
-      const response = await updateAccount(payload);
-      toast({
-        title: response.message,
-        variant: "success",
-        duration: toastDurationInMiliseconds,
-      });
-      fetchAccount();
-      setOpen(false);
-    } catch (error) {
-      if (error instanceof Error) {
-        toast({
-          title: error.message,
-          variant: "destructive",
-          duration: toastDurationInMiliseconds,
-        });
-      }
-    }
-  };
-
-  const onBlockAccount = async () => {
-    const toastDurationInMiliseconds = 3 * 1000; // 3 Seconds
-    try {
-      const response = await blockAccount();
-      toast({
-        title: response.message,
-        variant: "success",
-        duration: toastDurationInMiliseconds,
-      });
-      await logout();
-      router.push("/");
-    } catch (error) {
-      if (error instanceof Error) {
-        toast({
-          title: error.message,
-          variant: "destructive",
-          duration: toastDurationInMiliseconds,
-        });
-      }
-    }
-  };
+  const { handleBlockAccount } = useBlockAccount(account);
 
   return (
     <Dialog
-      open={open}
+      open={modal.isOpen}
       onOpenChange={(open) => {
-        setOpen(open);
-        setEditMode(false);
+        modal.setIsOpen(open);
+        if (editMode) toggleEditMode();
       }}
     >
-      <DialogTrigger asChild>
+      <DialogTrigger disabled={isPending} asChild>
         <User
           size={32}
-          className="fill-white duration-300 hover:fill-primary hover:cursor-pointer"
+          className={`fill-white duration-300 ${
+            !isPending && "hover:fill-primary hover:cursor-pointer"
+          }`}
         />
       </DialogTrigger>
       <DialogContent className="w-full max-w-sm rounded-lg lg:rounded-sm lg:max-w-xl">
@@ -136,7 +72,7 @@ export function MyAccount({ account }: { account: Account | null }) {
         </DialogHeader>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(handleUpdateAccount)}
             autoComplete="off"
             className="flex flex-col gap-8"
           >
@@ -167,7 +103,10 @@ export function MyAccount({ account }: { account: Account | null }) {
                     <DatePicker
                       date={field.value}
                       disabled={!editMode}
-                      onChange={field.onChange}
+                      onChange={(value: Date) => {
+                        const [datePart] = value.toISOString().split("T");
+                        field.onChange(datePart);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -186,7 +125,7 @@ export function MyAccount({ account }: { account: Account | null }) {
                       defaultValue={`${field.value}`}
                       onValueChange={(value) => field.onChange(Number(value))}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full focus:outline-primary">
                         <SelectValue placeholder="Selecione o tipo de conta..." />
                       </SelectTrigger>
                       <SelectContent>
@@ -219,25 +158,42 @@ export function MyAccount({ account }: { account: Account | null }) {
                 <FormItem className="flex flex-col">
                   <FormLabel>Limite de Saque Diário</FormLabel>
                   <FormControl>
-                    <MoneyInput disabled={!editMode} {...field} />
+                    <MoneyInput
+                      disabled={!editMode}
+                      value={field.value}
+                      onChange={(e) => {
+                        const cleanedValue = e.target.value
+                          .slice(3)
+                          .replaceAll(".", "")
+                          .replaceAll(",", ".");
+
+                        field.onChange(Number(cleanedValue));
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <DialogFooter
-              className={
-                "flex items-center mt-4 w-full " +
-                (editMode ? "lg:justify-between" : "")
-              }
+              className={`flex items-center mt-4 w-full ${
+                editMode && "lg:justify-between"
+              }`}
             >
               {editMode ? (
                 <>
                   <div className="p-1 rounded-full duration-300 hover:bg-secondary hover:cursor-pointer">
-                    <ArrowLeft size={24} onClick={onEditChange} />
+                    <ArrowLeft size={24} onClick={toggleEditMode} />
                   </div>
-                  <Button type="submit" className="w-full max-w-52">
-                    Salvar
+                  <Button
+                    type="submit"
+                    disabled={isUpdatePending}
+                    className="w-full max-w-52"
+                  >
+                    Salvar{" "}
+                    {isUpdatePending && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
                   </Button>
                 </>
               ) : (
@@ -246,7 +202,7 @@ export function MyAccount({ account }: { account: Account | null }) {
                     type="button"
                     variant="destructive"
                     className="flex gap-2"
-                    onClick={onBlockAccount}
+                    onClick={handleBlockAccount}
                   >
                     Bloquear
                     <Lock size={24} className="fill-white" />
@@ -254,7 +210,7 @@ export function MyAccount({ account }: { account: Account | null }) {
                   <Button
                     type="button"
                     className="flex gap-2"
-                    onClick={onEditChange}
+                    onClick={(e) => (e.preventDefault(), toggleEditMode())}
                   >
                     Editar
                     <Pencil size={24} className="fill-white" />

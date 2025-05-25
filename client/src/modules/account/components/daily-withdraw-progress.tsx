@@ -1,5 +1,5 @@
 import { Progress } from "@/components/ui/progress";
-import { toBrasilianReal } from "@/lib/utils";
+import { toBrasilianReal } from "@/lib/masks";
 import { Hiddleble } from "@/components/hiddeble";
 
 export function DailyWithdrawProgress({
