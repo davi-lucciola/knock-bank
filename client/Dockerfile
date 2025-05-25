@@ -9,12 +9,12 @@ RUN yarn install
 
 COPY src ./src
 COPY public ./public
-COPY next.config.mjs tailwind.config.ts postcss.config.mjs tsconfig.json ./
+COPY next.config.ts postcss.config.mjs tsconfig.json ./
 
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
-RUN npm run build
+RUN yarn run build
 
 # Runtime Stage
 FROM node:20-alpine AS runtime
@@ -28,4 +28,4 @@ COPY --from=builder /knockbank_web/package.json ./
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start"]
+CMD ["yarn", "run", "start"]

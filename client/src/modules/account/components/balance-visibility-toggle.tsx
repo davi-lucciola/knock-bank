@@ -12,8 +12,8 @@ export function BalanceVisibilityToggle() {
   return (
     <Button
       variant="secondary"
-      className="w-12 h-12"
-      onClick={() => toggleIsBalanceVisible()}
+      className="w-12 h-12 hover:cursor-pointer"
+      onClick={toggleIsBalanceVisible}
     >
       {isBalanceVisible ? (
         <Eye size={32} className="scale-150" />

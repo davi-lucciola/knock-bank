@@ -1,6 +1,6 @@
 "use client";
 
-import { Transaction } from "@/modules/transaction/schemas/transaction";
+import { Transaction } from "@/modules/transaction/transaction.type";
 import { TransactionItem } from "./transaction-item";
 import { Skeleton } from "@/components/ui/skeleton";
 

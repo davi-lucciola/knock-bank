@@ -1,45 +1,28 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const API_URL = process.env.NEXT_PUBLIC_API_URL;
+export const INTERNAL_API_URL = process.env.NEXT_PRIVATE_API_URL ?? API_URL;
 
-export const HttpStatus = {
-  Ok: 200,
-  Created: 201,
-  NoContent: 204,
-  BadRequest: 400,
-  Unauthorized: 401,
-  Forbidden: 403,
-  InternalServerError: 500,
-};
-
-export type ApiResponse = {
-  message: string;
-  detail?: object;
-};
-
-export class ApiError extends Error {
-  detail?: object;
-
-  constructor(message: string, detail?: object) {
-    super(message);
-    this.detail = detail;
-  }
+if (!API_URL) {
+  throw Error("❌ Api url is not defined.");
 }
 
-export class ApiBadRequestError extends ApiError {}
-export class ApiUnauthorizedError extends ApiError {}
-export class ApiForbiddenError extends ApiError {}
-export class ApiInternalServerError extends ApiError {}
-
 export class Api {
+  private baseUrl?: string;
   private accessToken?: string;
 
-  constructor(accessToken: string | undefined = undefined) {
+  constructor(baseUrl?: string, accessToken?: string) {
+    this.baseUrl = baseUrl;
+    this.accessToken = accessToken;
+  }
+
+  public setAccessToken(accessToken: string) {
     this.accessToken = accessToken;
   }
 
   public async get<R>(url: string, params?: URLSearchParams): Promise<R> {
     url = !params ? url : `${url}?${params?.toString()}`;
 
-    const response = await fetch(url, {
+    const response = await fetch(`${this.baseUrl}${url}`, {
       method: "GET",
       headers: {
         ...(this.accessToken && {
@@ -53,8 +36,8 @@ export class Api {
     return data;
   }
 
-  public async post<R, B = any>(url: string, body: B): Promise<R> {
-    const response = await fetch(url, {
+  public async post<R, B = unknown>(url: string, body: B): Promise<R> {
+    const response = await fetch(`${this.baseUrl}${url}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -71,7 +54,7 @@ export class Api {
   }
 
   public async put<R, B = any>(url: string, body: B): Promise<R> {
-    const response = await fetch(url, {
+    const response = await fetch(`${this.baseUrl}${url}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -88,7 +71,7 @@ export class Api {
   }
 
   public async delete<R, B = any>(url: string, body?: B): Promise<R> {
-    const response = await fetch(url, {
+    const response = await fetch(`${this.baseUrl}${url}`, {
       method: "DELETE",
       headers: {
         ...(body && {
@@ -123,3 +106,32 @@ export class Api {
     }
   }
 }
+
+export const HttpStatus = {
+  Ok: 200,
+  Created: 201,
+  NoContent: 204,
+  BadRequest: 400,
+  Unauthorized: 401,
+  Forbidden: 403,
+  InternalServerError: 500,
+};
+
+export type ApiResponse = {
+  message: string;
+  detail?: object;
+};
+
+export class ApiError extends Error {
+  detail?: object;
+
+  constructor(message: string, detail?: object) {
+    super(message);
+    this.detail = detail;
+  }
+}
+
+export class ApiBadRequestError extends ApiError {}
+export class ApiUnauthorizedError extends ApiError {}
+export class ApiForbiddenError extends ApiError {}
+export class ApiInternalServerError extends ApiError {}

@@ -1,90 +1,114 @@
 "use client";
 
+import { Bar, BarChart, XAxis } from "recharts";
+import { toBrasilianReal } from "@/lib/masks";
+
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js/auto";
-import { useContext, useEffect } from "react";
-import { Bar } from "react-chartjs-2";
+  NameType,
+  ValueType,
+} from "recharts/types/component/DefaultTooltipContent";
+import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { TransactionContext } from "@/modules/transaction/contexts/transaction-context";
-import { useUnauthorizedHandler } from "@/modules/auth/hooks/use-unauthorized-handler";
+import { useQuery } from "@tanstack/react-query";
+import { useService } from "@/providers/service.provider";
+import { TransactionMonthResume } from "@/modules/transaction/transaction.type";
+import { Skeleton } from "@/components/ui/skeleton";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+const chartConfig = {
+  input: {
+    label: "Entrada",
+    color: "var(--color-success)",
+  },
+  output: {
+    label: "Saída",
+    color: "var(--color-destructive)",
+  },
+} satisfies ChartConfig;
 
-type AccountResumeCardProps = {
-  className: string;
-};
+function getChartData(dataList: TransactionMonthResume[]) {
+  const months = Array.from(new Set(dataList.map((data) => data.month)));
 
-export function AccountResumeCard({ className }: AccountResumeCardProps) {
-  const { verifyToken, unauthorizedHandler } = useUnauthorizedHandler();
-  const { transactions, transactionsResume, fetchTransactionsResume } =
-    useContext(TransactionContext);
+  const dataInput = dataList.filter((data) => data.label == "Entrada");
+  const dataOutput = dataList.filter((data) => data.label == "Saída");
 
-  useEffect(() => {
-    verifyToken();
-    fetchTransactionsResume().catch(unauthorizedHandler);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [transactions]);
+  const resumeChartData = months.map((month) => ({
+    month,
+    input: dataInput.find((input) => input.month == month)!.amount,
+    output: dataOutput.find((output) => output.month == month)!.amount,
+  }));
 
-  const data = {
-    labels: Array.from(
-      new Set(transactionsResume.map((resume) => resume.month))
-    ),
-    datasets: [
-      {
-        label: "Entrada",
-        data: transactionsResume
-          .filter((resume) => resume.label == "Entrada")
-          .map((resume) => resume.amount),
-        borderColor: "#50AF47",
-        backgroundColor: "#50AF47",
-      },
-      {
-        label: "Saída",
-        data: transactionsResume
-          .filter((resume) => resume.label == "Saída")
-          .map((resume) => resume.amount),
-        borderColor: "#E25858",
-        backgroundColor: "#E25858",
-      },
-    ],
-  };
+  return resumeChartData;
+}
+
+export function TransactionResumeCard() {
+  const { transactionService } = useService();
+
+  const { data: resume, isPending } = useQuery({
+    queryKey: ["transactions-resume"],
+    queryFn: () => transactionService.getTransactionResume(),
+  });
+
+  if (isPending || !resume) {
+    return (
+      <Skeleton className="w-full shadow-lg row-start-3 lg:row-start-2 lg:col-span-2" />
+    );
+  }
+
+  const chartData = getChartData(resume);
 
   return (
-    <Card className={className}>
+    <Card className="w-full flex flex-col gap-0 pb-3 justify-between row-start-3 lg:row-start-2 lg:col-span-2">
       <CardHeader className="text-2xl font-semibold">Resumo</CardHeader>
       <CardContent className="relative h-full lg:max-h-80">
-        <Bar
-          data={data}
-          options={{
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                position: "bottom",
-              },
-            },
-            scales: {
-              y: {
-                display: false,
-              },
-            },
-          }}
-        />
+        <ChartContainer config={chartConfig} className="h-full w-full">
+          <BarChart accessibilityLayer data={chartData}>
+            <XAxis
+              dataKey="month"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+            />
+            <ChartTooltip
+              content={
+                <ChartTooltipContent
+                  className="w-[180px]"
+                  formatter={(value, name) => (
+                    <TooltipContent value={value} name={name} />
+                  )}
+                />
+              }
+            />
+            <Bar dataKey="input" fill="var(--color-success)" radius={4} />
+            <Bar dataKey="output" fill="var(--color-destructive)" radius={4} />
+          </BarChart>
+        </ChartContainer>
       </CardContent>
     </Card>
+  );
+}
+
+type TooltipContentProps = {
+  name: NameType;
+  value: ValueType;
+};
+
+function TooltipContent({ name, value }: TooltipContentProps) {
+  return (
+    <>
+      <div
+        className="h-2.5 w-2.5 shrink-0 rounded-[2px] bg-[--color-bg]"
+        style={
+          {
+            background: chartConfig[name as keyof typeof chartConfig]?.color,
+          } as React.CSSProperties
+        }
+      />
+      {chartConfig[name as keyof typeof chartConfig]?.label}
+      <div className="ml-auto flex items-baseline gap-0.5 font-mono font-medium tabular-nums text-foreground">
+        {toBrasilianReal(Number(value.toString()))}
+      </div>
+    </>
   );
 }

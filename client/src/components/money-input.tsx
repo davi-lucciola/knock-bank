@@ -1,8 +1,9 @@
-import React from "react";
-import { Input, InputProps } from "./ui/input";
-import { formatBrasilianReal, toBrasilianReal } from "@/lib/utils";
+import { ComponentProps, forwardRef } from "react";
+import { Input } from "./ui/input";
+import { formatBrasilianReal, toBrasilianReal } from "@/lib/masks";
 
-export const MoneyInput = React.forwardRef<HTMLInputElement, InputProps>(
+export const MoneyInput = forwardRef<HTMLInputElement, ComponentProps<"input">>(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ({ className, value, onChange, ...props }, ref) => {
     return (
       <Input
