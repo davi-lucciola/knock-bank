@@ -33,8 +33,17 @@ services:
       context: ./client
       args:
         NEXT_PUBLIC_API_URL: 'http://localhost:8000/api'
+    environment:
+      NEXT_PUBLIC_API_URL: 'http://localhost:8000/api'
+      NEXT_PRIVATE_API_URL: 'http://api:8000/api'
+      NEXTAUTH_URL: 'http://localhost:3000'
+      NEXTAUTH_SECRET: 'ixULWpM8PfB9NposRUy/ypGFjVsSE/qVqYkY7+/ml0M='
     depends_on:
       - api
+
+networks:
+  default:
+    driver: bridge
 
 volumes:
   mysql-db:

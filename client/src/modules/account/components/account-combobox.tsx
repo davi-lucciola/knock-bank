@@ -14,58 +14,44 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useContext, useEffect, useState } from "react";
-import { AccountContext } from "@/modules/account/contexts/account-context";
-import { BaseAccount, AccountQuery } from "@/modules/account/schemas/account";
+import { useAccounts } from "../hooks/use-accounts";
 
 type AccountsComboboxProps = {
-  value: number;
+  accountId: number;
   setAccountId: (accountId: number) => void;
 };
 
 export function AccountCombobox({
-  value,
+  accountId,
   setAccountId,
 }: AccountsComboboxProps) {
-  const { getAccounts } = useContext(AccountContext);
-  const [open, setOpen] = useState<boolean>(false);
-  const [accounts, setAccounts] = useState<BaseAccount[]>([]);
-  const [commandSearch, setCommandSearch] = useState<string>("");
-
-  useEffect(() => {
-    const query: AccountQuery = {
-      search: commandSearch,
-    };
-    getAccounts(query).then((data) => setAccounts(data));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [commandSearch]);
+  const { accounts, filters, setFilters, buttonLabel, popover } =
+    useAccounts(accountId);
 
   return (
-    <Popover open={open} onOpenChange={(open: boolean) => setOpen(open)}>
+    <Popover open={popover.isOpen} onOpenChange={popover.setIsOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" className="w-full">
-          {value
-            ? accounts.find((account) => account.id == value)?.person.name
-            : "Selecione uma Conta"}
+          {buttonLabel}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[462px]">
         <Command className="w-full" shouldFilter={false}>
           <CommandInput
             placeholder="Pesquise uma conta..."
-            value={commandSearch}
-            onValueChange={setCommandSearch}
+            value={filters.search}
+            onValueChange={(value) => setFilters({ search: value })}
           />
           <CommandList>
             <CommandEmpty>Não há resultados para mostrar.</CommandEmpty>
             <CommandGroup>
-              {accounts.map((account) => (
+              {accounts?.data.map((account) => (
                 <CommandItem
                   key={account.id}
                   className="flex flex-col items-start cursor-pointer"
                   onSelect={() => {
                     setAccountId(account.id);
-                    setOpen(false);
+                    popover.setIsOpen(false);
                   }}
                 >
                   <p>{account.person.name}</p>

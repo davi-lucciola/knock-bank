@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Form,
   FormControl,
@@ -16,63 +17,24 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  LoginUserPayload,
-  LoginUserSchema,
-} from "@/modules/auth/schemas/login-user";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useContext } from "react";
-import { AuthContext } from "@/modules/auth/contexts/auth-context";
-import { useToast } from "@/components/ui/use-toast";
-import { useRouter } from "next/navigation";
-import { formatCpf } from "@/lib/utils";
-import { ApiError } from "@/lib/api";
+import { formatCpf } from "@/lib/masks";
+import { Loader2 } from "lucide-react";
+import { useLogin } from "@/modules/auth/hooks/use-login";
 
 export function LoginForm() {
-  const router = useRouter();
-  const { toast } = useToast();
-  const { login } = useContext(AuthContext);
-  const form = useForm<LoginUserPayload>({
-    resolver: zodResolver(LoginUserSchema),
-    defaultValues: {
-      cpf: "",
-      password: "",
-    },
-  });
-
-  const onSubmit = async (payload: LoginUserPayload) => {
-    const toastDurationInMiliseconds = 3 * 1000; // 3 Seconds
-    try {
-      await login(payload);
-      toast({
-        title: "Conectado com sucesso.",
-        variant: "success",
-        duration: toastDurationInMiliseconds,
-      });
-      router.push("/dashboard");
-    } catch (error) {
-      if (error instanceof ApiError) {
-        toast({
-          title: error.message,
-          variant: "destructive",
-          duration: toastDurationInMiliseconds,
-        });
-      }
-    }
-  };
+  const { form, isPending, handleLogin } = useLogin();
 
   return (
     <Dialog>
       <DialogTrigger asChild>
         <button
           className="px-4 py-2 h-fit 
-            border-gray-100 border rounded-2xl
+            border-primary border rounded-2xl
             text-xl font-bold
             duration-300
-            hover:bg-gray-100 hover:text-white"
+            hover:bg-primary hover:text-white hover:cursor-pointer"
         >
           Fazer Login
         </button>
@@ -83,7 +45,7 @@ export function LoginForm() {
         </DialogHeader>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(handleLogin)}
             autoComplete="off"
             className="flex flex-col gap-4"
           >
@@ -126,9 +88,13 @@ export function LoginForm() {
               )}
             />
             <DialogFooter>
-              <Button type="submit" className="w-full max-w-52">
-                {" "}
+              <Button
+                type="submit"
+                className="w-full max-w-52"
+                disabled={isPending}
+              >
                 Entrar{" "}
+                {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               </Button>
             </DialogFooter>
           </form>
