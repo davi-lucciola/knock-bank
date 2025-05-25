@@ -1,16 +1,20 @@
-"use client";
-
 import { KnockBankLogo } from "@/components/knock-bank-logo";
 import { LoginForm } from "@/modules/auth/components/login-form";
-import { RegisterForm } from "@/modules/account/components/register-form";
-import { useContext, useEffect } from "react";
-import { AuthContext } from "@/modules/auth/contexts/auth-context";
-import { useRouter } from "next/navigation";
+import { CreateAccountForm } from "@/modules/account/components/create-account-form";
+
+export default function HomePage() {
+  return (
+    <div className="bg-white h-screen flex flex-col">
+      <Header />
+      <Hero />
+    </div>
+  );
+}
 
 function Header() {
   return (
-    <header className="container m-auto flex justify-between items-center px-4">
-      <div id="logo" className="flex items-center text-2xl font-bold">
+    <header className="container m-auto flex justify-between items-center py-4">
+      <div id="logo" className="flex items-center gap-4 text-2xl font-bold">
         <KnockBankLogo size={64} />
         <span> KnockBank</span>
       </div>
@@ -21,7 +25,7 @@ function Header() {
 
 function Hero() {
   return (
-    <main className="container flex flex-col flex-grow justify-center gap-4">
+    <main className="container m-auto flex flex-col flex-grow justify-center gap-8">
       <h1 className="text-5xl font-extrabold lg:max-w-lg">
         Sempre dando um <strong>Knock Out</strong> nas suas dívidas
       </h1>
@@ -29,25 +33,7 @@ function Hero() {
         Venha com o banco que traz a maior facilidade para trânsferências.
         Quando você vê, o dinheiro já está batendo na sua porta.
       </p>
-      <RegisterForm />
+      <CreateAccountForm />
     </main>
-  );
-}
-
-export default function HomePage() {
-  const router = useRouter();
-  const { isAuth } = useContext(AuthContext);
-
-  useEffect(() => {
-    if (isAuth) {
-      router.push("/dashboard");
-    }
-  });
-
-  return (
-    <div className="bg-white h-screen flex flex-col">
-      <Header />
-      <Hero />
-    </div>
   );
 }

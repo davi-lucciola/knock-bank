@@ -1,11 +1,11 @@
 "use client";
 
-import { Hiddleble } from "@/components/hiddeble";
-import { toBrasilianReal } from "@/lib/utils";
 import {
   Transaction,
   TransactionType,
-} from "@/modules/transaction/schemas/transaction";
+} from "@/modules/transaction/transaction.type";
+import { Hiddleble } from "@/components/hiddeble";
+import { toBrasilianReal } from "@/lib/masks";
 
 type TransactionProps = {
   label: string;
@@ -47,7 +47,7 @@ export function TransactionItem({ transaction }: { transaction: Transaction }) {
           <div>
             <p className="text-lg font-bold"> {label} </p>
             <p>
-              <span className="text-gray-100 font-normal">
+              <span className="text- font-normal">
                 {new Date(transaction.dateTime).toLocaleDateString("pt-BR", {
                   hour: "2-digit",
                   minute: "2-digit",

@@ -1,39 +1,13 @@
 "use client";
 
-import { useContext } from "react";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/components/ui/use-toast";
-import { SignOut } from "@phosphor-icons/react/dist/ssr";
-import { AuthContext } from "@/modules/auth/contexts/auth-context";
+import { SignOut } from "@phosphor-icons/react";
+import { useLogout } from "@/modules/auth/hooks/use-logout";
 
 export function LogoutButton() {
-  const router = useRouter();
-  const { toast } = useToast();
-  const { logout } = useContext(AuthContext);
-
-  async function handleLogout() {
-    const toastDurationInMiliseconds = 3 * 1000; // 3 Seconds
-    try {
-      await logout();
-      toast({
-        title: "Usuário desconectado com sucesso.",
-        variant: "success",
-        duration: toastDurationInMiliseconds,
-      });
-      router.push("/");
-    } catch (error) {
-      if (error instanceof Error) {
-        toast({
-          title: error.message,
-          variant: "destructive",
-          duration: toastDurationInMiliseconds,
-        });
-      }
-    }
-  }
+  const { handleLogout } = useLogout();
 
   return (
-    <button>
+    <button className="hover:cursor-pointer">
       <SignOut
         onClick={handleLogout}
         size={32}
