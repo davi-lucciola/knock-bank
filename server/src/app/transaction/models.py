@@ -1,10 +1,9 @@
-from pytz import timezone
 from decimal import Decimal
-from datetime import datetime as dt
+from datetime import datetime as dt, timezone
 from core.db import BaseModel, Long
 from app.account.models import Account
 from app.transaction.enums import TransactionType
-from sqlalchemy import Column, Integer, DateTime, Numeric, ForeignKey
+from sqlalchemy import Column, Integer, TIMESTAMP, Numeric, ForeignKey, func
 from sqlalchemy.orm import Mapped, relationship
 
 
@@ -12,7 +11,7 @@ class Transaction(BaseModel):
     __tablename__ = 'transactions'
 
     id: Mapped[int] = Column(Long, primary_key=True, autoincrement=True)
-    date_time: Mapped[dt] = Column(DateTime, nullable=False, default=dt.now)
+    date_time: Mapped[dt] = Column(TIMESTAMP(timezone=True), nullable=False, default=dt.now)
     money: Mapped[Decimal] = Column(Numeric(10, 2), nullable=False)
     transaction_type: Mapped[int] = Column(Integer, nullable=False)
 
@@ -53,7 +52,7 @@ class Transaction(BaseModel):
         return {
             'id': self.id,
             'money': float(self.money),
-            'dateTime': self.date_time.astimezone(timezone('America/Sao_Paulo')),
+            'dateTime': self.date_time.astimezone(timezone.utc),
             'transactionType': self.transaction_type,
             'account': {
                 'id': self.account.id,

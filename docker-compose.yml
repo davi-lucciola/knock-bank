@@ -5,6 +5,7 @@ services:
     ports:
       - "3306:3306"
     environment:
+      TZ: 'America/Sao_Paulo'
       MYSQL_DATABASE: 'knock_bank_db'
       MYSQL_USER: 'admin'
       MYSQL_PASSWORD: 'admin'
@@ -19,6 +20,7 @@ services:
     build: 
       context: ./server
     environment:
+      TZ: 'America/Sao_Paulo'
       TOKEN_SECRET: 'supersecretkey'
       SHOW_SQL: false
       SQLALCHEMY_DATABASE_URI: 'mysql+mysqlconnector://admin:admin@db:3306/knock_bank_db'
