@@ -1,8 +1,9 @@
 from fastapi import Depends
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 from dataclasses import dataclass
-from sqlalchemy import text, select, func
+from sqlalchemy import text, select
+from sqlalchemy.sql.expression import func
 from sqlalchemy.orm import Session
 from core.db import get_db
 from app.transaction.models import Transaction
@@ -51,7 +52,7 @@ class TransactionRepository:
         query = (
             select(func.sum(Transaction.money))
             .where(Transaction.account_id == account_id)
-            .where(func.date(Transaction.date_time) == (date.today()))
+            .where(func.date(Transaction.date_time) == (datetime.now().date()))
             .where(Transaction.transaction_type == TransactionType.WITHDRAW.value[0])
         )
 
